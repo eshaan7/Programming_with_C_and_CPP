@@ -1,6 +1,7 @@
-/* HCF of two numbers
-   Author: Eshaan Bansal
-   Date: 23/09/2016 */
+/*  File Name: HCF.cpp
+	Description: HCF of two numbers
+	Author: Eshaan Bansal
+	Date: 23/09/2016 */
 
 #include<iostream.h>
 #include<conio.h>
