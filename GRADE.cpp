@@ -19,7 +19,7 @@ void main()
 	total = total + marks;
 	 } */
 	char grade;
-	float a,b,c,d,e,avg,total; // taking input without using while loop
+	float a,b,c,d,e,avg,total;
 	cout<<"Enter marks obtained in 5 subjects: ";
 	cin>>a>>b>>c>>d>>e;
 	total=a+b+c+d+e;
