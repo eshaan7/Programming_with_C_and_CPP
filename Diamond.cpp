@@ -11,9 +11,9 @@ int main()
 	int n,i,j,k,a;
 	cout<<"Enter any number: ";
 	cin>>n;
-        for (i=1; i<=n; i++) {
+    for (i=1; i<=n; i++) {
 		cout<<endl; 
-        cout<<setw(20-i);
+		cout<<setw(20-i);
 		for (j=1; j<=(2*i)-1; j++) {			
 			cout<<"*";
 		}		       
