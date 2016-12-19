@@ -12,7 +12,7 @@ int main()
 	cin>>n;
         for (i=1; i<=n; i++) {
 		cout<<endl; 
-        	cout<<setw(20-i);
+        cout<<setw(20-i);
 		for (j=n; j>n-i; j--) {			
 			cout<<j;
 		}		       
