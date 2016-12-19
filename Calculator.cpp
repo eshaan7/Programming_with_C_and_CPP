@@ -1,4 +1,4 @@
-// Menu Driven Program
+// Menu Driven Calculator
 
 #include<iostream.h>
 #include<conio.h>
