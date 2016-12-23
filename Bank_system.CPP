@@ -6,7 +6,7 @@
 #include<string.h>
 #include<ctype.h>
 
-struct account { long num, balance; char name[20]; char type; int pin[5]; };
+struct account { long num, balance; char name[20], type; int pin[4]; };
 account acc;
 int flag=0;
 
@@ -46,16 +46,6 @@ void write_acc()
 	cout<<"\n\n\t-----------Account Created-----------";
 }
 
-void dep(long x)
-{
-	acc.balance+=x;
-}
-
-void withdraw(long x)
-{
-	acc.balance-=x;
-}
-
 void deposit_withdraw( int option )
 {
 	long n,amt;
@@ -67,12 +57,12 @@ void deposit_withdraw( int option )
 			if (option==1) {
 				cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>>";
 				cin>>amt;
-				dep(amt); // Invokes dep() function
+				acc.balance+=amt;
 			}
 			else if (option==2) {
 				cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>>";
 				cin>>amt;
-				withdraw(amt); // Invokes withdraw() function
+				acc.balance-=amt;
 			}
 			cout<<"\n\n\tAccount Balance: "<<acc.balance;
 		}
@@ -92,10 +82,13 @@ void show_acc()
 	if (n==acc.num) {
 		pin_verify();
 		if (flag!=1) {
-			cout<<"\n\n\n\tAccount no.: "<<acc.num;
-			cout<<"\n\tAccount Holder Name: "<<acc.name;
-			cout<<"\n\tType of Account: "<<acc.type;
-			cout<<"\n\tAccount Balance: "<<acc.balance;
+			cout<<"\n\n\t----------------------------------------------"<<endl;
+			cout<<"\t\t\t-- ACCOUNT DETAILS --"
+				<<"\n\n\n\tAccount no.: "<<acc.num
+				<<"\n\tAccount Holder Name: "<<acc.name
+				<<"\n\tType of Account: "<<acc.type
+				<<"\n\tAccount Balance: "<<acc.balance;
+			cout<<"\n\t----------------------------------------------"<<endl;
 		}
 		else
 			flag=0;
@@ -168,6 +161,11 @@ void delete_acc()
 			<<"\n\tPlease check the no. you've entered and try again";
 }
 
+void credits()
+{
+	
+}
+
 void main()
 {
 	clrscr();
@@ -182,9 +180,10 @@ void main()
 	    <<"\n\t4. Account enquiry"
 	    <<"\n\t5. Modify account"
 	    <<"\n\t6. Close an account"
-		<<"\n\t7. Exit";
+		<<"\n\t7. Credits"
+		<<"\n\t8. Exit";
 	cout<<"\n\t----------------------------------------------"<<endl;
-	cout<<"\n\tEnter choice(1-7): ";
+	cout<<"\n\tEnter choice(1-8): ";
 	cin>>choice;
     switch (choice)
     {
@@ -224,7 +223,13 @@ void main()
 		 getch();
 		 clrscr();
 		 break;
-	 case 7: // Terminates the program
+	 case 7: // Invokes credits() function
+	 	  clrscr();
+		  credits();
+		  getch();
+		  clrscr();
+		  break;
+	 case 8: // Terminates the program
 	 		exit(0);
 			break; 
 	 default:
@@ -234,6 +239,6 @@ void main()
 	/* To make the program run multiple times, so that we can use
 		all  options before it terminates
 			*/
-    } while (count<=6);
+    } while (count<=8);
     getch();
 }
