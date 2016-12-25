@@ -6,11 +6,15 @@
 #include<string.h>
 #include<ctype.h>
 
-struct account { long num, balance; char name[20], type; int pin[4]; };
+struct account { long num, balance; char name[20], address[30], type; int pin[4]; };
 account acc;
 int flag=0;
 
-void pin_verify()
+/* 	takes a 4 digit numeric code as input which is obscured as it is typed by using asterisks (*) 
+	and compares it with the PIN no.
+	this function is invoked every time a user wishes to do some task for security purposes */ 
+
+void pin_verify() 
 {
 	int i, x[4];
 	cout<<"\nEnter PIN: ";
@@ -29,7 +33,9 @@ void pin_verify()
 
 void write_acc()
 {
-	cout<<"\nEnter account no.(ex: xxxx69): ";
+	gotoxy(30,1);
+	cout<<"CREATE A NEW ACCOUNT";
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
 	cin>>acc.num;
 	cout<<"\nEnter name of the account holder: ";
 	gets(acc.name);
@@ -48,19 +54,21 @@ void write_acc()
 
 void deposit_withdraw( int option )
 {
+	gotoxy(28,1);
+	cout<<"DEPOSIT / WITHDRAW MONEY";
 	long n,amt;
-	cout<<"\nEnter account no.(ex: xxxx69): ";
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
 	cin>>n;
 	if (n==acc.num) {
 		pin_verify();
 		if (flag!=1) {
 			if (option==1) {
-				cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>>";
+				cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>> ";
 				cin>>amt;
 				acc.balance+=amt;
 			}
 			else if (option==2) {
-				cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>>";
+				cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>> ";
 				cin>>amt;
 				acc.balance-=amt;
 			}
@@ -69,9 +77,9 @@ void deposit_withdraw( int option )
 		else
 			flag=0;
 	}
-	else 
+	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again";
+			<<"\n\tPlease check the no. you've entered and try again.";
 }
 
 void show_acc()
@@ -83,8 +91,8 @@ void show_acc()
 		pin_verify();
 		if (flag!=1) {
 			cout<<"\n\n\t----------------------------------------------"<<endl;
-			cout<<"\t\t\t-- ACCOUNT DETAILS --"
-				<<"\n\n\n\tAccount no.: "<<acc.num
+			cout<<"\t\t -- ACCOUNT DETAILS --"
+				<<"\n\tAccount no.: "<<acc.num
 				<<"\n\tAccount Holder Name: "<<acc.name
 				<<"\n\tType of Account: "<<acc.type
 				<<"\n\tAccount Balance: "<<acc.balance;
@@ -95,15 +103,17 @@ void show_acc()
 	}
 	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again";
+			<<"\n\tPlease check the no. you've entered and try again.";
 
 }
 
 void modify_acc()
 {
+	gotoxy(26,1);
+	cout<<"UPDATE ACCOUNT PREFERENCES";
 	long n;
 	char confirm=' ';
-	cout<<"\nEnter account no. you wish to modify(ex: xxxx69): ";
+	cout<<"\n\nEnter account no. you wish to modify(ex: xxxx69): ";
 	cin>>n;
 	if (n==acc.num) {
 		pin_verify();
@@ -132,19 +142,23 @@ void modify_acc()
 	}
 	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again";
+			<<"\n\tPlease check the no. you've entered and try again.";
 }
 
 void delete_acc()
 {
-	long n1;
+	gotoxy(29,1);
+	cout<<"CLOSE AN ACCOUNT";
+	long n;
 	char confirm=' ';
-	cout<<"\nEnter account no. you wish to modify(ex: xxxx69): ";
-	cin>>n1;
-	if (n1==acc.num) {
+	cout<<"\n\nEnter account no. you wish to modify(ex: xxxx69): ";
+	cin>>n;
+	if (n==acc.num) {
 		cout<<"\nAre you sure you want to delete your account ? (y/N) >> ";
 		confirm=getch();
+		confirm=toupper(confirm);
 		if(confirm=='Y') {
+			cout<<"\n";
 			pin_verify();
 			if(flag!=1) {
 				// delete statement
@@ -154,16 +168,90 @@ void delete_acc()
 				flag=0;
 		}
 		else
-				cout<<"\n\n\tTask terminated";
+			cout<<"\n\n\tTask terminated.";
 	}
 	else
-		cout<<"\n\n\tWrong account no. entered." 
-			<<"\n\tPlease check the no. you've entered and try again";
+		cout<<"\n\n\tWrong account no. entered."
+		    <<"\n\tPlease check the no. you've entered and try again.";
 }
+
+void transfer()
+{
+	gotoxy(32,1);
+	cout<<"FUNDS TRANSFER";
+	long n,n2,amt;
+	char confirm=' ';
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
+	cin>>n;
+	if (n==acc.num) {
+		cout<<"\nAre you sure you want to transfer funds to another account? (y/N): ";
+		confirm=getch();
+		confirm=toupper(confirm);
+		if(confirm=='Y') {
+			cout<<"\n";
+			pin_verify();
+			if (flag!=1)  {
+				cout<<"\n\n\tEnter the account no. of the beneficiary(ex: xxxx69):";
+				cin>>n2;
+				cout<<"\n\tHow much amount do you want to transfer ?\n\t>> ";
+				cin>>amt;
+				acc.balance-=amt;
+				cout<<"\n\n\t-----------Funds transferred-----------";
+			}
+			else
+				flag=0;
+		}
+		else
+			cout<<"\n\n\tTask terminated.";	
+	}	
+	else
+		cout<<"\n\n\tWrong account no. entered."
+			<<"\n\tPlease check the no. you've entered and try again.";
+}
+
+void cheque_req()
+{
+	gotoxy(25,1);
+	cout<<"REQUEST FOR A NEW CHEQUE BOOK";
+	long n;
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
+	cin>>n;
+	if (n==acc.num) {
+		pin_verify();
+		if (flag!=1) {
+			cout<<"\n\tEnter communication address(ex: flat no., street name, city, zip code) :";
+			gets(acc.address);
+			cout<<"\n\tAccount no.: "<<acc.num
+				<<"\n\tAccount Holder Name: "<<acc.name;
+			cout<<"\nPress enter to submit.";
+			getch();
+			cout<<"\nNotes:"
+				<<"\n\tThe cheque book will be sent to your communication address as updated in our records."
+				<<"\n\tThe first delivery will be attempted by Courier within 5 working days.";
+		}
+		else
+				flag=0;
+	}
+	else
+		cout<<"\n\n\tWrong account no. entered."
+			<<"\n\tPlease check the no. you've entered and try again.";
+}
+
 
 void credits()
 {
-	
+	int i,a,b;
+	long j;
+	for (i=0; i<27; i++ ) {
+		clrscr();
+		gotoxy(38,27-i);
+		cout<<"MADE BY";
+		gotoxy(35,28-i);
+		cout<<"ESHAAN BANSAL";
+		gotoxy(35,29-i);
+		cout<<"ESHAAN BANSAL";
+		for (j=0;j<9000000;j++) {} // time
+       }
 }
 
 void main()
@@ -180,58 +268,72 @@ void main()
 	    <<"\n\t4. Account enquiry"
 	    <<"\n\t5. Modify account"
 	    <<"\n\t6. Close an account"
-		<<"\n\t7. Credits"
-		<<"\n\t8. Exit";
+		<<"\n\t7. Transfer funds to another account"
+		<<"\n\t8. Request a cheque book"
+		<<"\n\t9. Credits"
+		<<"\n\t10. Exit";
 	cout<<"\n\t----------------------------------------------"<<endl;
-	cout<<"\n\tEnter choice(1-8): ";
+	cout<<"\n\tEnter choice(1-10): ";
 	cin>>choice;
     switch (choice)
     {
-	 case 1: // Invoking write_acc() function
+	 case 1: // Invokes write_acc() function
 		 clrscr();
 		 write_acc();
 		 getch();
 		 clrscr();
 		 break;
-	 case 2: // Invoking deposit_withdraw() function for deposit purpose
+	 case 2: // Invokes deposit_withdraw() function for deposit purpose
 		 clrscr();
-		 deposit_withdraw(1);
+		 deposit_withdraw(1); // 1 => deposit
 		 getch();
 		 clrscr();
 		 break;
-	 case 3: // Invoking deposit_withdraw() function for withdraw purpose
+	 case 3: // Invokes deposit_withdraw() function for withdraw purpose
 		 clrscr();
-		 deposit_withdraw(2);
+		 deposit_withdraw(2); // 2 => withdraw
 		 getch();
 		 clrscr();
 		 break;
-	 case 4: // Invoking show_acc() function
+	 case 4: // Invokes show_acc() function
 		 clrscr();
 		 show_acc();
 		 getch();
 		 clrscr();
 		 break;
-	 case 5: // Invoking modify_acc() function
+	 case 5: // Invokes modify_acc() function
 		 clrscr();
 		 modify_acc();
 		 getch();
 		 clrscr();
 		 break;
-	 case 6: // Invoking delete_acc() function
+	 case 6: // Invokes delete_acc() function
 		 clrscr();
 		 delete_acc();
 		 getch();
 		 clrscr();
 		 break;
-	 case 7: // Invokes credits() function
-	 	  clrscr();
+	 case 7: // Invokes transfer() function
+		  clrscr();
+		  transfer();
+		  getch();
+		  clrscr();
+		  break;
+	 case 8: // Invokes cheque_req() function
+	      clrscr();
+		  cheque_req();
+		  getch();
+		  clrscr();
+		  break;
+	 case 9: // Invokes credits() function
+		  clrscr();
 		  credits();
 		  getch();
 		  clrscr();
 		  break;
-	 case 8: // Terminates the program
-	 		exit(0);
-			break; 
+	 case 10: // Terminates the program
+			exit(0);
+			break;
 	 default:
 		 break;
     }
@@ -239,6 +341,6 @@ void main()
 	/* To make the program run multiple times, so that we can use
 		all  options before it terminates
 			*/
-    } while (count<=8);
+    } while (count<=11);
     getch();
 }
