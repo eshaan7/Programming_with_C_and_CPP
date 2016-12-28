@@ -1,3 +1,7 @@
+/* Programmers' name: Eshaan Bansal & Anviti Singh
+   Date: 28/12/2016
+   Title: Bank management system
+	*/
 
 #include<iostream.h>
 #include<conio.h>
@@ -10,11 +14,11 @@ struct account { long num, balance; char name[20], address[30], type; int pin[4]
 account acc;
 int flag=0;
 
-/* 	takes a 4 digit numeric code as input which is obscured as it is typed by using asterisks (*) 
+/* 	takes a 4 digit numeric code as input which is obscured as it is typed by using asterisks (*)
 	and compares it with the PIN no.
-	this function is invoked every time a user wishes to do some task for security purposes */ 
+	this function is invoked every time a user wishes to do some task for security purposes */
 
-void pin_verify() 
+void pin_verify()
 {
 	int i, x[4];
 	cout<<"\nEnter PIN: ";
@@ -42,7 +46,7 @@ void write_acc()
 	cout<<"\nWhat type of account do you wish to open ? (C/S): ";
 	cin>>acc.type;
 	acc.type=toupper(acc.type);
-	cout<<"\nEnter the Initial amount(>=500 for Saving and >=1000 for current): ";
+	cout<<"\nEnter the Initial amount( >=500 for Saving and >=1000 for current ): ";
 	cin>>acc.balance;
 	cout<<"\nSet PIN code for your account(ex: xx00): ";
 	for(int i=0; i<4; i++) {
@@ -79,7 +83,7 @@ void deposit_withdraw( int option )
 	}
 	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again.";
+		    <<"\n\tPlease check the no. you've entered and try again.";
 }
 
 void show_acc()
@@ -92,10 +96,11 @@ void show_acc()
 		if (flag!=1) {
 			cout<<"\n\n\t----------------------------------------------"<<endl;
 			cout<<"\t\t -- ACCOUNT DETAILS --"
-				<<"\n\tAccount no.: "<<acc.num
-				<<"\n\tAccount Holder Name: "<<acc.name
-				<<"\n\tType of Account: "<<acc.type
-				<<"\n\tAccount Balance: "<<acc.balance;
+			    <<"\n\tAccount no.: "<<acc.num
+			    <<"\n\tAccount Holder Name: "<<acc.name
+			    <<"\n\tType of Account: ";
+			(acc.type=='S')?cout<<"Savings":cout<<"Current";
+			cout<<"\n\tAccount Balance: "<<acc.balance;
 			cout<<"\n\t----------------------------------------------"<<endl;
 		}
 		else
@@ -103,7 +108,7 @@ void show_acc()
 	}
 	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again.";
+		    <<"\n\tPlease check the no. you've entered and try again.";
 
 }
 
@@ -119,14 +124,14 @@ void modify_acc()
 		pin_verify();
 		if (flag!=1) {
 			cout<<"\n\nDo you wish to change your account no. ? (y/N) >> ";
-			confirm=getch();
+			cin>>confirm;
 			confirm=toupper(confirm);
 			if(confirm=='Y') {
 				cout<<"\n\n\tPlease enter new account no.: ";
 				cin>>acc.num;
 			}
 			cout<<"\n\nDo you wish to change the PIN code ? (y/N) >> ";
-			confirm=getch();
+			cin>>confirm;
 			confirm=toupper(confirm);
 			if(confirm=='Y') {
 				cout<<"\n\n\tSet new PIN code for your account: ";
@@ -155,7 +160,7 @@ void delete_acc()
 	cin>>n;
 	if (n==acc.num) {
 		cout<<"\nAre you sure you want to delete your account ? (y/N) >> ";
-		confirm=getch();
+		cin>>confirm;
 		confirm=toupper(confirm);
 		if(confirm=='Y') {
 			cout<<"\n";
@@ -185,7 +190,7 @@ void transfer()
 	cin>>n;
 	if (n==acc.num) {
 		cout<<"\nAre you sure you want to transfer funds to another account? (y/N): ";
-		confirm=getch();
+		cin>>confirm;
 		confirm=toupper(confirm);
 		if(confirm=='Y') {
 			cout<<"\n";
@@ -206,7 +211,7 @@ void transfer()
 	}	
 	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again.";
+		    <<"\n\tPlease check the no. you've entered and try again.";
 }
 
 void cheque_req()
@@ -219,39 +224,42 @@ void cheque_req()
 	if (n==acc.num) {
 		pin_verify();
 		if (flag!=1) {
-			cout<<"\n\tEnter communication address(ex: flat no., street name, city, zip code) :";
+			cout<<"\n\nEnter communication address(ex: flat no., street name, city, zip code)\n>>";
 			gets(acc.address);
-			cout<<"\n\tAccount no.: "<<acc.num
-				<<"\n\tAccount Holder Name: "<<acc.name;
-			cout<<"\nPress enter to submit.";
+			cout<<"\n\n\tAccount no.: "<<acc.num
+			    <<"\n\tAccount Holder Name: "<<acc.name
+			    <<"\n\tCommunication address: "<<acc.address;
+			cout<<"\n\n\tPress enter to submit.";
 			getch();
-			cout<<"\nNotes:"
-				<<"\n\tThe cheque book will be sent to your communication address as updated in our records."
-				<<"\n\tThe first delivery will be attempted by Courier within 5 working days.";
+			cout<<"\n\nNotes:"
+				<<"\n1. The cheque book will be sent to your communication address as updated in our records."
+				<<"\n2. The first delivery will be attempted by Courier within 5 working days.";
 		}
 		else
-				flag=0;
+			flag=0;
 	}
 	else
 		cout<<"\n\n\tWrong account no. entered."
-			<<"\n\tPlease check the no. you've entered and try again.";
+		    <<"\n\tPlease check the no. you've entered and try again.";
 }
 
 
 void credits()
 {
-	int i,a,b;
 	long j;
-	for (i=0; i<27; i++ ) {
+	// Scrolling animation
+	for ( int i=0; i<23; i++ ) {
 		clrscr();
-		gotoxy(38,27-i);
-		cout<<"MADE BY";
-		gotoxy(35,28-i);
-		cout<<"ESHAAN BANSAL";
-		gotoxy(35,29-i);
-		cout<<"ESHAAN BANSAL";
-		for (j=0;j<9000000;j++) {} // time
-       }
+		gotoxy(30,23-i);
+		cout<<"BANK MANAGEMENT SYSTEM";
+		gotoxy(5,25-i);
+		cout<<"MADE BY: ESHAAN BANSAL";
+		gotoxy(5,27-i);
+		cout<<"CLASS: XI-C";
+		gotoxy(5,29-i);
+		cout<<"ROLL. NO.: 16";
+		for (j=0;j<9900000;j++) {} // time delay
+    }
 }
 
 void main()
@@ -260,6 +268,8 @@ void main()
 	int count=0, choice;
 	do {
 	// Fancy menu
+	gotoxy(30,1);
+	cout<<"BANK MANAGEMENT SYSTEM";
 	cout<<"\n\n\t----------------------------------------------"<<endl;
 	cout<<"\t\t\t-- MENU --";
 	cout<<"\n\t1. Open new account"
@@ -268,74 +278,74 @@ void main()
 	    <<"\n\t4. Account enquiry"
 	    <<"\n\t5. Modify account"
 	    <<"\n\t6. Close an account"
-		<<"\n\t7. Transfer funds to another account"
-		<<"\n\t8. Request a cheque book"
-		<<"\n\t9. Credits"
-		<<"\n\t10. Exit";
+	    <<"\n\t7. Transfer funds to another account"
+	    <<"\n\t8. Request a cheque book"
+	    <<"\n\t9. Credits"
+	    <<"\n\t10. Exit";
 	cout<<"\n\t----------------------------------------------"<<endl;
 	cout<<"\n\tEnter choice(1-10): ";
 	cin>>choice;
-    switch (choice)
-    {
-	 case 1: // Invokes write_acc() function
-		 clrscr();
-		 write_acc();
-		 getch();
-		 clrscr();
-		 break;
+	switch (choice)
+	{
+	case 1: // Invokes write_acc() function
+		clrscr();
+		write_acc();
+		getch();
+		clrscr();
+		break;
 	 case 2: // Invokes deposit_withdraw() function for deposit purpose
-		 clrscr();
-		 deposit_withdraw(1); // 1 => deposit
-		 getch();
-		 clrscr();
-		 break;
+		clrscr();
+		deposit_withdraw(1); // 1 => deposit
+		getch();
+		clrscr();
+		break;
 	 case 3: // Invokes deposit_withdraw() function for withdraw purpose
-		 clrscr();
-		 deposit_withdraw(2); // 2 => withdraw
-		 getch();
-		 clrscr();
-		 break;
+		clrscr();
+		deposit_withdraw(2); // 2 => withdraw
+		getch();
+		clrscr();
+		break;
 	 case 4: // Invokes show_acc() function
-		 clrscr();
-		 show_acc();
-		 getch();
-		 clrscr();
-		 break;
+		clrscr();
+		show_acc();
+		getch();
+		clrscr();
+		break;
 	 case 5: // Invokes modify_acc() function
-		 clrscr();
-		 modify_acc();
-		 getch();
-		 clrscr();
-		 break;
+		clrscr();
+		modify_acc();
+		getch();
+		clrscr();
+		break;
 	 case 6: // Invokes delete_acc() function
-		 clrscr();
-		 delete_acc();
-		 getch();
-		 clrscr();
-		 break;
+		clrscr();
+		delete_acc();
+		getch();
+		clrscr();
+		break;
 	 case 7: // Invokes transfer() function
-		  clrscr();
-		  transfer();
-		  getch();
-		  clrscr();
-		  break;
+		clrscr();
+		transfer();
+		getch();
+		clrscr();
+		break;
 	 case 8: // Invokes cheque_req() function
-	      clrscr();
-		  cheque_req();
-		  getch();
-		  clrscr();
-		  break;
+		clrscr();
+		cheque_req();
+		getch();
+		clrscr();
+		break;
 	 case 9: // Invokes credits() function
-		  clrscr();
-		  credits();
-		  getch();
-		  clrscr();
-		  break;
+		clrscr();
+		credits();
+		getch();
+		clrscr();
+		break;
 	 case 10: // Terminates the program
-			exit(0);
-			break;
+		exit(0);
+		break;
 	 default:
-		 break;
+		break;
     }
     count++;
 	/* To make the program run multiple times, so that we can use
