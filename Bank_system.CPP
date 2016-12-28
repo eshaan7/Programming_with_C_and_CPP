@@ -1,4 +1,4 @@
-/* Programmers' name: Eshaan Bansal & Anviti Singh
+/* Programmers' name: Eshaan Bansal
    Date: 28/12/2016
    Title: Bank management system
 	*/
