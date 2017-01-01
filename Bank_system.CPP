@@ -1,4 +1,4 @@
-/* Programmers' name: Eshaan Bansal
+/* Programmer's name: Eshaan Bansal
    Date: 28/12/2016
    Title: Bank management system
 	*/
@@ -9,6 +9,7 @@
 #include<process.h>
 #include<string.h>
 #include<ctype.h>
+#include<stdlib.h>
 
 struct account { long num, balance; char name[20], address[30], type; int pin[4]; };
 account acc;
@@ -29,7 +30,8 @@ void pin_verify()
 	for(i=0; i<4; i++) {
 		if (x[i]!=acc.pin[i]) {
 			flag=1;
-			cout<<"\n\n\tWrong PIN entered. Please check the PIN you entered and try again.";
+			cout<<"\n\n\tWrong PIN entered."
+			    <<"\n\tPlease check the PIN code you entered and try again.";
 			break;
 		}
 	}
@@ -39,6 +41,9 @@ void write_acc()
 {
 	gotoxy(30,1);
 	cout<<"CREATE A NEW ACCOUNT";
+	cout<<"\n\nNote: Your new account will replace the previous account.";
+	cout<<"\n\n\tIf you wish to continue. Press any key.";
+	getch();
 	cout<<"\n\nEnter account no.(ex: xxxx69): ";
 	cin>>acc.num;
 	cout<<"\nEnter name of the account holder: ";
@@ -46,7 +51,7 @@ void write_acc()
 	cout<<"\nWhat type of account do you wish to open ? (C/S): ";
 	cin>>acc.type;
 	acc.type=toupper(acc.type);
-	cout<<"\nEnter the Initial amount( >=500 for Saving and >=1000 for current ): ";
+	cout<<"\nEnter the initial amount( >=500 for Saving and >=1000 for current ): ";
 	cin>>acc.balance;
 	cout<<"\nSet PIN code for your account(ex: xx00): ";
 	for(int i=0; i<4; i++) {
@@ -75,6 +80,9 @@ void deposit_withdraw( int option )
 				cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>> ";
 				cin>>amt;
 				acc.balance-=amt;
+				if (acc.balance<0)
+					cout<<"\n\nNote:"
+					    <<"\nPlease pay your debt in the next 30 days or face penalty charges.";
 			}
 			cout<<"\n\n\tAccount Balance: "<<acc.balance;
 		}
@@ -89,7 +97,7 @@ void deposit_withdraw( int option )
 void show_acc()
 {
 	long n;
-	cout<<"\nEnter account no.(ex: xxxx69): ";
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
 	cin>>n;
 	if (n==acc.num) {
 		pin_verify();
@@ -99,7 +107,10 @@ void show_acc()
 			    <<"\n\tAccount no.: "<<acc.num
 			    <<"\n\tAccount Holder Name: "<<acc.name
 			    <<"\n\tType of Account: ";
-			(acc.type=='S')?cout<<"Savings":cout<<"Current";
+			if (acc.type=='S')
+				cout<<"Savings";
+			else if (acc.type=='C')
+				cout<<"Current";
 			cout<<"\n\tAccount Balance: "<<acc.balance;
 			cout<<"\n\t----------------------------------------------"<<endl;
 		}
@@ -114,7 +125,7 @@ void show_acc()
 
 void modify_acc()
 {
-	gotoxy(26,1);
+	gotoxy(28,1);
 	cout<<"UPDATE ACCOUNT PREFERENCES";
 	long n;
 	char confirm=' ';
@@ -152,7 +163,7 @@ void modify_acc()
 
 void delete_acc()
 {
-	gotoxy(29,1);
+	gotoxy(34,1);
 	cout<<"CLOSE AN ACCOUNT";
 	long n;
 	char confirm=' ';
@@ -163,10 +174,21 @@ void delete_acc()
 		cin>>confirm;
 		confirm=toupper(confirm);
 		if(confirm=='Y') {
+			cout<<"\n\nNote:"
+			    <<"\nDo not forget to collect your cash from a nearby branch.";
 			cout<<"\n";
 			pin_verify();
 			if(flag!=1) {
-				// delete statement
+				// resetting values
+				acc.num=rand() % 999999;
+				acc.balance=0;
+				acc.type='\0';
+				for (int i=0; i<20; i++)
+					acc.name[i]='\0';
+				for (i=0; i<30; i++)
+					acc.address[i]='\0';
+				for (i=0; i<4; i++)
+					acc.pin[i]=rand() % 10;
 				cout<<"\n\n\t-----------Account Deleted-----------";
 			}
 			else
@@ -182,7 +204,7 @@ void delete_acc()
 
 void transfer()
 {
-	gotoxy(32,1);
+	gotoxy(34,1);
 	cout<<"FUNDS TRANSFER";
 	long n,n2,amt;
 	char confirm=' ';
@@ -207,8 +229,8 @@ void transfer()
 				flag=0;
 		}
 		else
-			cout<<"\n\n\tTask terminated.";	
-	}	
+			cout<<"\n\n\tTask terminated.";
+	}
 	else
 		cout<<"\n\n\tWrong account no. entered."
 		    <<"\n\tPlease check the no. you've entered and try again.";
@@ -266,13 +288,14 @@ void main()
 {
 	clrscr();
 	int count=0, choice;
+	clrscr();
 	do {
 	// Fancy menu
 	gotoxy(30,1);
 	cout<<"BANK MANAGEMENT SYSTEM";
 	cout<<"\n\n\t----------------------------------------------"<<endl;
 	cout<<"\t\t\t-- MENU --";
-	cout<<"\n\t1. Open new account"
+	cout<<"\n\t1. Open a new account"
 	    <<"\n\t2. Deposit amount"
 	    <<"\n\t3. Withdraw amount"
 	    <<"\n\t4. Account enquiry"
@@ -351,6 +374,6 @@ void main()
 	/* To make the program run multiple times, so that we can use
 		all  options before it terminates
 			*/
-    } while (count<=11);
+    } while (count<=20);
     getch();
 }
