@@ -37,8 +37,24 @@ void pin_verify()
 	}
 }
 
+// check_amt() checks the initial amount of deposit to fit the specified criteria
+void check_amt(long amt) 
+{
+	if (acc.type=='S' && amt >= 500)
+			acc.balance=amt;
+	else if (acc.type=='C' && amt >= 1000)
+			acc.balance=amt;
+	else {
+			cout<<"\n\tPlease deposit sufficient amount of funds.";
+			cout<<"\n\nEnter the initial amount( >=500 for Saving and >=1000 for current ) >> ";
+			cin>>amt;
+			check_amt(amt); // Recursion
+	}
+}
+
 void write_acc()
 {
+	long amt;
 	gotoxy(30,1);
 	cout<<"CREATE A NEW ACCOUNT";
 	cout<<"\n\nNote: Your new account will replace the previous account.";
@@ -51,8 +67,9 @@ void write_acc()
 	cout<<"\nWhat type of account do you wish to open ? (C/S): ";
 	cin>>acc.type;
 	acc.type=toupper(acc.type);
-	cout<<"\nEnter the initial amount( >=500 for Saving and >=1000 for current ): ";
-	cin>>acc.balance;
+	cout<<"\nEnter the initial amount( >=500 for saving and >=1000 for current ) >> ";
+	cin>>amt;
+	check_amt(amt); // Invokes check_amt() function
 	cout<<"\nSet PIN code for your account(ex: xx00): ";
 	for(int i=0; i<4; i++) {
 		acc.pin[i]=getch();
@@ -71,7 +88,7 @@ void deposit_withdraw( int option )
 	if (n==acc.num) {
 		pin_verify();
 		if (flag!=1) {
-			if (option==1) {
+			if (option==1) { 
 				cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>> ";
 				cin>>amt;
 				acc.balance+=amt;
@@ -79,13 +96,13 @@ void deposit_withdraw( int option )
 			else if (option==2) {
 				cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>> ";
 				cin>>amt;
-				acc.balance-=amt;
-				if (acc.balance<0)
-					cout<<"\n\nNote:"
-					    <<"\nPlease pay your debt in the next 30 days or face penalty charges.";
+				if (amt > acc.balance)
+					cout<<"\n\n\tInsufficient funds. Please try again.";
+				else 
+					acc.balance-=amt;
+				cout<<"\n\n\tAccount Balance: "<<acc.balance;
 			}
-			cout<<"\n\n\tAccount Balance: "<<acc.balance;
-		}
+		}	
 		else
 			flag=0;
 	}
@@ -135,6 +152,9 @@ void modify_acc()
 		pin_verify();
 		if (flag!=1) {
 			cout<<"\n\nDo you wish to change your account no. ? (y/N) >> ";
+			/*	(y/N) represents that the user can give the input in 
+				  lower as well as upppercase		
+						*/
 			cin>>confirm;
 			confirm=toupper(confirm);
 			if(confirm=='Y') {
@@ -167,7 +187,7 @@ void delete_acc()
 	cout<<"CLOSE AN ACCOUNT";
 	long n;
 	char confirm=' ';
-	cout<<"\n\nEnter account no. you wish to modify(ex: xxxx69): ";
+	cout<<"\n\nEnter account no. you wish to delete(ex: xxxx69): ";
 	cin>>n;
 	if (n==acc.num) {
 		cout<<"\nAre you sure you want to delete your account ? (y/N) >> ";
@@ -246,14 +266,14 @@ void cheque_req()
 	if (n==acc.num) {
 		pin_verify();
 		if (flag!=1) {
-			cout<<"\n\nEnter communication address(ex: flat no., street name, city, zip code)\n>>";
+			cout<<"\n\nEnter communication address(ex: flat no., street name, city, zip code)\n>> ";
 			gets(acc.address);
 			cout<<"\n\n\tAccount no.: "<<acc.num
 			    <<"\n\tAccount Holder Name: "<<acc.name
 			    <<"\n\tCommunication address: "<<acc.address;
 			cout<<"\n\n\tPress enter to submit.";
 			getch();
-			cout<<"\n\nNotes:"
+			cout<<"\n\nNote:"
 				<<"\n1. The cheque book will be sent to your communication address as updated in our records."
 				<<"\n2. The first delivery will be attempted by Courier within 5 working days.";
 		}
