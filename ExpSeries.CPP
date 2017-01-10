@@ -14,7 +14,7 @@ void main()
 		fact=1;
 		for (j=1; j<=i; j++) {
 			power*=x;
-			fact*=i;
+			fact*=j;
 		}
 		S+=power/fact;
 	}
