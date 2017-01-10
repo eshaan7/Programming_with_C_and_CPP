@@ -16,8 +16,8 @@ void main()
 		n=n/2;
 	}
 	cout<<"\n\tNumber in Base 2: ";
-	for (int j=i; j>=0; j--)
-		cout<<r[j];
+	for (; i>=0; i--)
+		cout<<r[i];
 	getch();
 }
 

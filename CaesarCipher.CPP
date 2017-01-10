@@ -8,25 +8,18 @@
 #include<stdio.h>
 #include<string.h>
 
-void Encode( char str[20], int shift )
+void cipher( char str[20], int shift, int task)
 {
     int len=strlen(str);
     for (int i=0; i<len; i++) {
 	if (str[i] == ' ')
-	    continue;
-	else
-	     str[i]+=shift;
-    }
-}
-
-void Decode( char str[20], int shift )
-{
-    int len=strlen(str);
-    for (int i=0; i<len; i++) {
-	if (str[i] == ' ')
-	    continue;
-	else
-	     str[i]-=shift;
+		continue;
+	else {
+		if (task==1) // 1 => Encode
+			str[i]+=shift;
+		else if (task==2)   // 2 => Decode
+			str[i]-=shift;
+	}
     }
 }
 
@@ -50,7 +43,7 @@ void main()
 		gets(str);
 		cout<<"\n\tEnter number for the amount of letter shifting: ";
 		cin>>shift;
-		Encode(str, shift);
+		cipher(str, shift, 1);
 		cout<<"\n\n\t\Encoded string: "<<str;
 		break;
 	case 2: // Decode
@@ -58,7 +51,7 @@ void main()
 		gets(str);
 		cout<<"\n\tEnter number for the amount of letter shifting: ";
 		cin>>shift;
-		Decode(str, shift);
+		cipher(str, shift, 2);
 		cout<<"\n\n\tDecoded string: "<<str;
 		break;
 	default:
