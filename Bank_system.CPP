@@ -1,4 +1,4 @@
-/* Programmer's name: Eshaan Bansal
+/* Programmers' name: Eshaan Bansal & Anviti Singh
    Date: 28/12/2016
    Title: Bank management system
 	*/
@@ -10,6 +10,7 @@
 #include<string.h>
 #include<ctype.h>
 #include<stdlib.h>
+#include<dos.h>
 
 struct account { long num, balance; char name[20], address[30], type; int pin[4]; };
 account acc;
@@ -38,7 +39,7 @@ void pin_verify()
 }
 
 // check_amt() checks the initial amount of deposit to fit the specified criteria
-void check_amt(long amt) 
+void check_amt(long amt)
 {
 	if (acc.type=='S' && amt >= 500)
 			acc.balance=amt;
@@ -88,7 +89,7 @@ void deposit_withdraw( int option )
 	if (n==acc.num) {
 		pin_verify();
 		if (flag!=1) {
-			if (option==1) { 
+			if (option==1) {
 				cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>> ";
 				cin>>amt;
 				acc.balance+=amt;
@@ -288,26 +289,24 @@ void cheque_req()
 
 void credits()
 {
-	long j;
 	// Scrolling animation
 	for ( int i=0; i<23; i++ ) {
 		clrscr();
 		gotoxy(30,23-i);
 		cout<<"BANK MANAGEMENT SYSTEM";
 		gotoxy(5,25-i);
-		cout<<"MADE BY: ESHAAN BANSAL";
+		cout<<"MADE BY: ESHAAN BANSAL & ANVITI SINGH";
 		gotoxy(5,27-i);
 		cout<<"CLASS: XI-C";
 		gotoxy(5,29-i);
-		cout<<"ROLL. NO.: 16";
-		for (j=0;j<9900000;j++) {} // time delay
+		cout<<"ROLL. NO.: 16 & 8";
+		delay(200);
     }
 }
 
 void main()
 {
-	clrscr();
-	int count=0, choice;
+	int choice,a;
 	clrscr();
 	do {
 	// Fancy menu
@@ -388,12 +387,14 @@ void main()
 		exit(0);
 		break;
 	 default:
+		cout <<"\n\n\t\tInvalid input. Try again in  ";
+			for (a=5; a>=0; a--) {
+					delay(500);
+					cout<<"\b"<<a;
+			}
+		clrscr();
 		break;
     }
-    count++;
-	/* To make the program run multiple times, so that we can use
-		all  options before it terminates
-			*/
-    } while (count<=20);
+    } while (1);
     getch();
 }
