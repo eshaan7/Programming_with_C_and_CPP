@@ -1,26 +1,83 @@
 /* Programmers' name: Eshaan Bansal & Anviti Singh
-   Date: 28/12/2016
+   Date (last worked upon on): 19/07/2017
    Title: Bank management system
 	*/
 
 #include<iostream.h>
+#include<iomanip.h>
 #include<conio.h>
 #include<stdio.h>
 #include<process.h>
-#include<string.h>
 #include<ctype.h>
-#include<stdlib.h>
 #include<dos.h>
+#include<time.h>
+#include<fstream.h>
 
-struct account { long num, balance; char name[20], address[30], type; int pin[4]; };
-account acc;
+// global variables
+
 int flag=0;
+struct datee { int dd,mm,yy,sec,min,hour; }; // `datee' because `date' identifier is pre-defined in time.h
+time_t t=time(NULL);
+char* nowTime=ctime(&t);
+tm* d=localtime(&t); // tm->A structure(included in time.h) defining the broken-down time
+fstream fp;
+
+// main class
+
+class account
+{
+    long acnum, balance;
+    datee DOB,DOA; // DOA -> Date Of Activation
+    char name[20], address[30], type;
+    int pin[4];
+	tm* tx_date[20];
+	unsigned int tx_num;
+	long tx_amt[20];
+	char tx_type[20]; // S=> Debit/Sale/Payment, C=>Credit
+    public:
+	void pin_verify();
+	void check_acnum(long n);
+	void check_amt(long amt);
+	void write_acc();
+	void show_acc();
+	void modify_acc();
+	void delete_acc();
+	void cheque_req();
+	void dep(long amt);
+	void WDR(long amt);
+	void deposit_withdraw(int option);
+	void transfer();
+	void tx_history();
+	void display_all();
+	long retacnum()
+	{
+	    return acnum;
+	}
+	long retbalance()
+	{
+	    return balance;
+	}
+
+}acc;
+
+// end of main class defintion
+
+void account::dep(long amt)
+{
+	balance+=amt;
+}
+
+void account::WDR(long amt)
+{
+	balance-=amt;
+}
+
 
 /* 	takes a 4 digit numeric code as input which is obscured as it is typed by using asterisks (*)
 	and compares it with the PIN no.
 	this function is invoked every time a user wishes to do some task for security purposes */
 
-void pin_verify()
+void account::pin_verify()
 {
 	int i, x[4];
 	cout<<"\nEnter PIN: ";
@@ -29,8 +86,8 @@ void pin_verify()
 		cout<<"*";
 	}
 	for(i=0; i<4; i++) {
-		if (x[i]!=acc.pin[i]) {
-			flag=1;
+		if (x[i]!=pin[i]) {
+			::flag=1;
 			cout<<"\n\n\tWrong PIN entered."
 			    <<"\n\tPlease check the PIN code you entered and try again.";
 			break;
@@ -38,13 +95,34 @@ void pin_verify()
 	}
 }
 
-// check_amt() checks the initial amount of deposit to fit the specified criteria
-void check_amt(long amt)
+void account::check_acnum(long n)
 {
-	if (acc.type=='S' && amt >= 500)
-			acc.balance=amt;
-	else if (acc.type=='C' && amt >= 1000)
-			acc.balance=amt;
+	int f=0;
+	fstream fp2;
+	fp2.open("account.dat",ios::in);
+	while(fp2.read((char*)&acc,sizeof(account))) {
+			if (acnum==n)
+				f=1;
+	}
+	fp2.close();
+	if (f==1) {
+		cout<<"\n\tThis account number already exists."
+			<<"\n\tPlease choose another one."
+			<<"\n\nEnter account no.(ex: xxxx69): ";
+		cin>>n;
+		check_acnum(n); // Recursion
+	}
+	else
+		acnum=n;
+}
+
+// check_amt() checks the initial amount of deposit to fit the specified criteria
+void account::check_amt(long amt)
+{
+	if (type=='S' && amt >= 500)
+			balance=amt;
+	else if (type=='C' && amt >= 1000)
+			balance=amt;
 	else {
 			cout<<"\n\tPlease deposit sufficient amount of funds.";
 			cout<<"\n\nEnter the initial amount( >=500 for Saving and >=1000 for current ) >> ";
@@ -53,239 +131,422 @@ void check_amt(long amt)
 	}
 }
 
-void write_acc()
+void account::write_acc()
 {
+	fp.open("account.dat",ios::app);
 	long amt;
+	long n;
 	gotoxy(30,1);
 	cout<<"CREATE A NEW ACCOUNT";
-	cout<<"\n\nNote: Your new account will replace the previous account.";
-	cout<<"\n\n\tIf you wish to continue. Press any key.";
-	getch();
-	cout<<"\n\nEnter account no.(ex: xxxx69): ";
-	cin>>acc.num;
+	cout<<"\n\n\nEnter account no.(ex: xxxx69): ";
+	cin>>n;
+	check_acnum(n);  // Invokes check_acnum() function
 	cout<<"\nEnter name of the account holder: ";
-	gets(acc.name);
+	gets(name);
+	cout<<"\nEnter Date of Birth in DD/MM/YYYY format: ";
+	cin>>DOB.dd;
+	gotoxy(48, 8);
+	cout<<"/ ";
+	cin>>DOB.mm;
+	gotoxy(53, 8);
+	cout<<"/ ";
+	cin>>DOB.yy;
 	cout<<"\nWhat type of account do you wish to open ? (C/S): ";
-	cin>>acc.type;
-	acc.type=toupper(acc.type);
+	cin>>type;
+	type=toupper(type);
 	cout<<"\nEnter the initial amount( >=500 for saving and >=1000 for current ) >> ";
 	cin>>amt;
 	check_amt(amt); // Invokes check_amt() function
 	cout<<"\nSet PIN code for your account(ex: xx00): ";
 	for(int i=0; i<4; i++) {
-		acc.pin[i]=getch();
+		pin[i]=getch();
 		cout<<"*";
 	}
+	cout<<"\n\nTime of account creation >> "<<nowTime;
+	DOA.dd=d->tm_mday;
+	DOA.mm=d->tm_mon;
+	DOA.yy=d->tm_year;
 	cout<<"\n\n\t-----------Account Created-----------";
+	fp.write((char*)&acc,sizeof(account));
+	fp.close();
 }
 
-void deposit_withdraw( int option )
-{
-	gotoxy(28,1);
-	cout<<"DEPOSIT / WITHDRAW MONEY";
-	long n,amt;
-	cout<<"\n\nEnter account no.(ex: xxxx69): ";
-	cin>>n;
-	if (n==acc.num) {
-		pin_verify();
-		if (flag!=1) {
-			if (option==1) {
-				cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>> ";
-				cin>>amt;
-				acc.balance+=amt;
-			}
-			else if (option==2) {
-				cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>> ";
-				cin>>amt;
-				if (amt > acc.balance)
-					cout<<"\n\n\tInsufficient funds. Please try again.";
-				else 
-					acc.balance-=amt;
-				cout<<"\n\n\tAccount Balance: "<<acc.balance;
-			}
-		}	
-		else
-			flag=0;
-	}
-	else
-		cout<<"\n\n\tWrong account no. entered."
-		    <<"\n\tPlease check the no. you've entered and try again.";
-}
-
-void show_acc()
+void account::show_acc()
 {
 	long n;
+	int f=0,found=0;
 	cout<<"\n\nEnter account no.(ex: xxxx69): ";
 	cin>>n;
-	if (n==acc.num) {
-		pin_verify();
-		if (flag!=1) {
-			cout<<"\n\n\t----------------------------------------------"<<endl;
-			cout<<"\t\t -- ACCOUNT DETAILS --"
-			    <<"\n\tAccount no.: "<<acc.num
-			    <<"\n\tAccount Holder Name: "<<acc.name
-			    <<"\n\tType of Account: ";
-			if (acc.type=='S')
-				cout<<"Savings";
-			else if (acc.type=='C')
-				cout<<"Current";
-			cout<<"\n\tAccount Balance: "<<acc.balance;
-			cout<<"\n\t----------------------------------------------"<<endl;
+	fp.open("account.dat",ios::in);
+	while(fp.read((char*)&acc,sizeof(account)) && found==0) {
+		if (n==acnum) {
+			f=1;
+			pin_verify();
+			if (flag!=1) {
+				cout<<"\n\n\t----------------------------------------------"<<endl;
+				cout<<"\t\t -- ACCOUNT DETAILS --"
+					<<"\n\tAccount no.: "<<acnum
+					<<"\n\tAccount Holder Name: "<<name
+					<<"\n\tDate of Birth: "<<DOB.dd<<"/"<<DOB.mm<<"/"<<DOB.yy
+					<<"\n\tDate of account creation: "<<DOA.dd<<"/"<<DOA.mm<<"/"<<1900+DOA.yy
+					<<"\n\tType of Account: ";
+				if (type=='S')
+					cout<<"Savings";
+				else if (type=='C')
+					cout<<"Current";
+				cout<<"\n\tAccount Balance: "<<balance;
+				cout<<"\n\t----------------------------------------------"<<endl;
+				break;
+			}
+			else
+				flag=0;
 		}
-		else
-			flag=0;
 	}
-	else
-		cout<<"\n\n\tWrong account no. entered."
-		    <<"\n\tPlease check the no. you've entered and try again.";
+	fp.close();
+	if (f==0)
+			cout<<"\n\n\tNo record found."
+				<<"\n\tPlease check the no. you've entered and try again.";
 
 }
 
-void modify_acc()
+void account::modify_acc()
 {
 	gotoxy(28,1);
 	cout<<"UPDATE ACCOUNT PREFERENCES";
-	long n;
+	long n,num;
+	int f=0;
 	char confirm=' ';
 	cout<<"\n\nEnter account no. you wish to modify(ex: xxxx69): ";
 	cin>>n;
-	if (n==acc.num) {
-		pin_verify();
-		if (flag!=1) {
-			cout<<"\n\nDo you wish to change your account no. ? (y/N) >> ";
-			/*	(y/N) represents that the user can give the input in 
-				  lower as well as upppercase		
-						*/
-			cin>>confirm;
-			confirm=toupper(confirm);
-			if(confirm=='Y') {
-				cout<<"\n\n\tPlease enter new account no.: ";
-				cin>>acc.num;
-			}
-			cout<<"\n\nDo you wish to change the PIN code ? (y/N) >> ";
-			cin>>confirm;
-			confirm=toupper(confirm);
-			if(confirm=='Y') {
-				cout<<"\n\n\tSet new PIN code for your account: ";
-				for(int i=0; i<4; i++) {
-					acc.pin[i]=getch();
-					cout<<"*";
+	fp.open("account.dat",ios::in|ios::out|ios::binary);
+	while(fp.read((char*)&acc,sizeof(account))) {
+		if (n==acnum) {
+			f=1;
+			pin_verify();
+			if (flag!=1) {
+				cout<<"\n\tAccount no.: "<<acnum;
+				cout<<"\n\nDo you wish to change your account no. ? (y/N) >> ";
+				/*	(y/N) represents that the user can give the input in
+					lower as well as upppercase
+							*/
+				cin>>confirm;
+				confirm=toupper(confirm);
+				if(confirm=='Y') {
+					cout<<"\n\n\tPlease enter new account no.: ";
+					cin>>num;
+					check_acnum(num); // Invokes check_acnum() function
 				}
+				cout<<"\n\nDo you wish to change the PIN code ? (y/N) >> ";
+				cin>>confirm;
+				confirm=toupper(confirm);
+				if(confirm=='Y') {
+					cout<<"\n\n\tSet new PIN code for your account: ";
+					for(int i=0; i<4; i++) {
+						pin[i]=getch();
+						cout<<"*";
+					}
+				}
+				cout<<"\n\n\t---------Account Details modified---------";
+				break;
 			}
-			cout<<"\n\n\t---------Account Details modified---------";
+			else
+				flag=0;
 		}
-		else
-			flag=0;
 	}
-	else
-		cout<<"\n\n\tWrong account no. entered."
+	fp.seekp(fp.tellp()-sizeof(account));
+	fp.write((char*)&acc,sizeof(account));
+	fp.close();
+	if (f==0)
+		cout<<"\n\n\tNo record found."
 			<<"\n\tPlease check the no. you've entered and try again.";
 }
 
-void delete_acc()
+void account::delete_acc()
 {
 	gotoxy(34,1);
 	cout<<"CLOSE AN ACCOUNT";
 	long n;
+	int f=0;
 	char confirm=' ';
 	cout<<"\n\nEnter account no. you wish to delete(ex: xxxx69): ";
 	cin>>n;
-	if (n==acc.num) {
-		cout<<"\nAre you sure you want to delete your account ? (y/N) >> ";
-		cin>>confirm;
-		confirm=toupper(confirm);
-		if(confirm=='Y') {
-			cout<<"\n\nNote:"
-			    <<"\nDo not forget to collect your cash from a nearby branch.";
-			cout<<"\n";
-			pin_verify();
-			if(flag!=1) {
-				// resetting values
-				acc.num=rand() % 999999;
-				acc.balance=0;
-				acc.type='\0';
-				for (int i=0; i<20; i++)
-					acc.name[i]='\0';
-				for (i=0; i<30; i++)
-					acc.address[i]='\0';
-				for (i=0; i<4; i++)
-					acc.pin[i]=rand() % 10;
-				cout<<"\n\n\t-----------Account Deleted-----------";
+	fp.open("account.dat",ios::in|ios::out);
+	while(fp.read((char*)&acc,sizeof(account))) {
+		if (n==acnum) {
+			f=1;
+			cout<<"\nAre you sure you want to delete your account ? (y/N) >> ";
+			cin>>confirm;
+			confirm=toupper(confirm);
+			if(confirm=='Y') {
+				cout<<"\n\nNote:"
+					<<"\nDo not forget to collect your cash from a nearby branch.";
+				cout<<"\n";
+				pin_verify();
+				if(flag!=1) {
+					fstream fp2;
+					fp2.open("Temp.dat",ios::out);
+					fp.seekg(0,ios::beg);
+					while(fp.read((char*)&acc,sizeof(account))) {
+						if(acnum!=n)
+								fp2.write((char*)&acc,sizeof(account));
+					}
+					fp2.close();
+					fp.close();
+					remove("account.dat");
+					rename("Temp.dat","account.dat");
+					cout<<"\n\n\t-----------Account Deleted-----------";
+				}
+				else
+					flag=0;
 			}
 			else
-				flag=0;
+				cout<<"\n\n\tTask terminated.";
 		}
-		else
-			cout<<"\n\n\tTask terminated.";
 	}
-	else
-		cout<<"\n\n\tWrong account no. entered."
-		    <<"\n\tPlease check the no. you've entered and try again.";
+	if (f==0)
+		cout<<"\n\n\No record found."
+			<<"\n\tPlease check the no. you've entered and try again.";
 }
 
-void transfer()
-{
-	gotoxy(34,1);
-	cout<<"FUNDS TRANSFER";
-	long n,n2,amt;
-	char confirm=' ';
-	cout<<"\n\nEnter account no.(ex: xxxx69): ";
-	cin>>n;
-	if (n==acc.num) {
-		cout<<"\nAre you sure you want to transfer funds to another account? (y/N): ";
-		cin>>confirm;
-		confirm=toupper(confirm);
-		if(confirm=='Y') {
-			cout<<"\n";
-			pin_verify();
-			if (flag!=1)  {
-				cout<<"\n\n\tEnter the account no. of the beneficiary(ex: xxxx69):";
-				cin>>n2;
-				cout<<"\n\tHow much amount do you want to transfer ?\n\t>> ";
-				cin>>amt;
-				acc.balance-=amt;
-				cout<<"\n\n\t-----------Funds transferred-----------";
-			}
-			else
-				flag=0;
-		}
-		else
-			cout<<"\n\n\tTask terminated.";
-	}
-	else
-		cout<<"\n\n\tWrong account no. entered."
-		    <<"\n\tPlease check the no. you've entered and try again.";
-}
 
-void cheque_req()
+void account::cheque_req()
 {
 	gotoxy(25,1);
 	cout<<"REQUEST FOR A NEW CHEQUE BOOK";
 	long n;
+	int f=0;
 	cout<<"\n\nEnter account no.(ex: xxxx69): ";
 	cin>>n;
-	if (n==acc.num) {
-		pin_verify();
-		if (flag!=1) {
-			cout<<"\n\nEnter communication address(ex: flat no., street name, city, zip code)\n>> ";
-			gets(acc.address);
-			cout<<"\n\n\tAccount no.: "<<acc.num
-			    <<"\n\tAccount Holder Name: "<<acc.name
-			    <<"\n\tCommunication address: "<<acc.address;
-			cout<<"\n\n\tPress enter to submit.";
-			getch();
-			cout<<"\n\nNote:"
-				<<"\n1. The cheque book will be sent to your communication address as updated in our records."
-				<<"\n2. The first delivery will be attempted by Courier within 5 working days.";
+	fp.open("account.dat",ios::in|ios::out);
+	while(fp.read((char*)&acc,sizeof(account))) {
+		if (n==acnum) {
+			f=1;
+			pin_verify();
+			if (flag!=1) {
+				cout<<"\n\nEnter communication address(ex: flat no., street name, city, zip code)\n>> ";
+				gets(address);
+				cout<<"\n\n\tAccount no.: "<<acnum
+					<<"\n\tAccount Holder Name: "<<name
+					<<"\n\tCommunication address: "<<address;
+				cout<<"\n\n\tPress enter to submit.";
+				getch();
+				cout<<"\n\nNote:"
+					<<"\n1. The cheque book will be sent to your communication address as updated in our records."
+					<<"\n2. The first delivery will be attempted by Courier within 5 working days.";
+			}
+			else
+				flag=0;
 		}
-		else
-			flag=0;
 	}
-	else
-		cout<<"\n\n\tWrong account no. entered."
+	fp.write((char*)&acc,sizeof(account));
+	fp.close();
+	if (f==0)
+			cout<<"\n\n\tNo record found."
+				<<"\n\tPlease check the no. you've entered and try again.";
+}
+
+
+void account::deposit_withdraw( int option )
+{
+	gotoxy(28,1);
+	cout<<"DEPOSIT / WITHDRAW MONEY";
+	long n,amt;
+	int f=0;
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
+	cin>>n;
+	fp.open("account.dat",ios::in|ios::out|ios::binary);
+	while(fp.read((char*)&acc,sizeof(account))) {
+		if (n==acnum) {
+			f=1;
+			pin_verify();
+			if (flag!=1) {
+				if (option==1) {
+					cout<<"\n\n\tHow much amount do you want to add to your account ?\n\t>> ";
+					cin>>amt;
+					dep(amt);
+					tx_num++;
+					tx_type[tx_num]='C';
+					tx_amt[tx_num]=amt;
+					tx_date[tx_num]=d;
+					break;
+				}
+				else if (option==2) {
+					cout<<"\n\n\tHow much amount do you want to withdraw from your account ?\n\t>> ";
+					cin>>amt;
+					if (amt > balance )
+						cout<<"\n\n\tInsufficient funds. Please try again.";
+					else {
+						WDR(amt);
+						tx_num++;
+						tx_type[tx_num]='S';
+						tx_amt[tx_num]=amt;
+						tx_date[tx_num]=d;
+						break;
+					}
+				}
+				cout<<"\n\n\tAccount Balance: "<<balance;
+			}
+			else
+				flag=0;
+		}
+	}
+	fp.seekp(fp.tellp()-sizeof(account));
+	fp.write((char*)&acc,sizeof(account));
+	fp.close();
+	if (f==0)
+		cout<<"\n\n\tNo record found."
 		    <<"\n\tPlease check the no. you've entered and try again.";
 }
 
+
+void account::transfer()
+{
+	gotoxy(34,1);
+	cout<<"FUNDS TRANSFER";
+	long n,n2,amt;
+	int f=0;
+	char confirm=' ';
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
+	cin>>n;
+	fp.open("account.dat",ios::in|ios::out|ios::binary);
+	while(fp.read((char*)&acc,sizeof(account))) {
+		if (n==acnum) {
+			f=1;
+			cout<<"\nAre you sure you want to transfer funds to another account? (y/N): ";
+			cin>>confirm;
+			confirm=toupper(confirm);
+			if(confirm=='Y') {
+				cout<<"\n";
+				pin_verify();
+				if (flag!=1)  {
+					cout<<"\n\n\tEnter the account no. of the beneficiary(ex: xxxx69):";
+					cin>>n2;
+					cout<<"\n\tHow much amount do you want to transfer ?\n\t>> ";
+					cin>>amt;
+					WDR(amt);
+					fp.seekp(fp.tellp()-sizeof(account));
+					fp.write((char*)&acc,sizeof(account));
+					fp.close();
+					fstream fp2;
+					fp2.open("account.dat", ios::in|ios::out|ios::binary);
+					while(fp2.read((char*)&acc,sizeof(account))) {
+						if (n2==acnum) {
+							dep(amt);
+							break;
+						}
+					}
+					fp2.seekp(fp2.tellp()-sizeof(account));
+					fp2.write((char*)&acc,sizeof(account));
+					fp2.close();
+					cout<<"\n\n\t-----------Funds transferred-----------";
+					tx_num++;
+					tx_type[tx_num]='S';
+					tx_amt[tx_num]=amt;
+					tx_date[tx_num]=d;
+					break;
+				}
+				else
+					flag=0;
+			}
+			else
+				cout<<"\n\n\tTask terminated.";
+		}
+	}
+	if (f==0)
+		cout<<"\n\n\tNo record found."
+		    <<"\n\tPlease check the no. you've entered and try again.";
+}
+
+void account::tx_history()
+{
+	gotoxy(32,1);
+	cout<<"TRANSACTION HISTORY";
+	long n;
+	int f=0;
+	cout<<"\n\nEnter account no.(ex: xxxx69): ";
+	cin>>n;
+	fp.open("account.dat",ios::in);
+	while(fp.read((char*)&acc,sizeof(account))) {
+		if (acnum==n) {
+			f=1;
+			pin_verify();
+			if (flag!=1)  {
+				clrscr();
+				gotoxy(10,2);
+				cout<<"S No.";
+				gotoxy(25,2);
+				cout<<"Date";
+				gotoxy(50,2);
+				cout<<"Type";
+				gotoxy(65,2);
+				cout<<"Amount";
+				gotoxy(10,3);
+				cout<<"-------------------------------------------------------------";
+				for (int i=1; i<=tx_num; i++) {
+					gotoxy(10,4+i);
+					cout<<i;
+					gotoxy(25,4+i);
+					cout<<tx_date[i]->tm_mday<<"/"<<tx_date[i]->tm_mon<<"/"<<1900+tx_date[i]->tm_year
+						<<"  "<<tx_date[i]->tm_hour<<":"<<tx_date[i]->tm_min<<":"<<tx_date[i]->tm_sec;
+					gotoxy(50,4+i);
+					if (tx_type[i]=='S')
+					cout<<"Sales";
+					else if (tx_type[i]=='C')
+					cout<<"Credit";
+					gotoxy(65,4+i);
+					if (tx_type[i]=='C')
+						cout<<"+"<<tx_amt[i];
+					else
+						cout<<"-"<<tx_amt[i];
+				}
+			}
+			else
+				flag=0;
+		}
+	}
+	fp.close();
+	if (f==0)
+			cout<<"\n\n\tNo record found."
+		    	<<"\n\tPlease check the no. you've entered and try again.";
+}
+
+
+void account::display_all()
+{
+	int i=0;
+	clrscr();		
+	gotoxy(32,1);
+	cout<<"ACCOUNT HOLDERS LIST";
+	gotoxy(10,3);
+	cout<<"A/c no.";
+	gotoxy(25,3);
+	cout<<"Name";
+	gotoxy(49,3);
+	cout<<"Type";
+	gotoxy(65,3);
+	cout<<"Balance";
+	gotoxy(10,4);
+	cout<<"-------------------------------------------------------------";
+    fp.open("account.dat",ios::in);
+    if(!fp) {
+       cout<<"\n\n\tERROR!!!\n\tDATAFILE COULD NOT BE FOUND\n\n\tGo To Admin Menu to create File";
+       return;
+    }
+    while(fp.read((char*)&acc,sizeof(account))){
+		gotoxy(10,6+i);
+		cout<<acnum;
+		gotoxy(25,6+i);
+		puts(name);
+		gotoxy(50,6+i);
+		cout<<type;
+		gotoxy(65,6+i);
+		cout<<balance;
+		i++;
+	}
+     fp.close();
+}
+
+// STANDALONE FUNCTIONS
 
 void credits()
 {
@@ -297,12 +558,109 @@ void credits()
 		gotoxy(5,25-i);
 		cout<<"MADE BY: ESHAAN BANSAL & ANVITI SINGH";
 		gotoxy(5,27-i);
-		cout<<"CLASS: XI-C";
+		cout<<"CLASS: XII-C";
 		gotoxy(5,29-i);
-		cout<<"ROLL. NO.: 16 & 8";
+		cout<<"ROLL. NO.: 17 & 8";
 		delay(200);
     }
 }
+void acc_mng()
+{
+	clrscr();
+	gotoxy(32,1);
+	cout<<"ACCOUNT MANAGEMENT";
+	int choice,a;
+	cout<<"\n\n\t----------------------------------------------"<<endl;
+	cout<<"\t\t\t-- MENU --";
+	cout<<"\n\t1. Open a new account"
+	    <<"\n\t2. Modify account"
+	    <<"\n\t3. Close an account"
+	    <<"\n\t4. Go back";
+	cout<<"\n\t----------------------------------------------"<<endl;
+	cout<<"\n\tEnter choice(1-4): ";
+	cin>>choice;
+	switch(choice)
+	{
+		case 1:	// Invokes write_acc() function
+			clrscr();
+			acc.write_acc();
+			getch();
+			clrscr();
+			break;
+		case 2:  // Invokes modify_acc() function
+			clrscr();
+			acc.modify_acc();
+			getch();
+			clrscr();
+			break;
+		case 3: // Invokes delete_acc() function
+			clrscr();
+			acc.delete_acc();
+			getch();
+			clrscr();
+			break;
+		case 4:
+			break;
+		default:
+			cout <<"\n\n\t\tInvalid input. Try again in  ";
+			for (a=5; a>=0; a--) {
+					delay(500);
+					cout<<"\b"<<a;
+			}
+			clrscr();
+			break;
+	}
+}
+
+void acc_tx()
+{
+	clrscr();
+	gotoxy(32,1);
+	cout<<"ACCOUNT TRANSACTIONS";
+	int choice,a;
+	cout<<"\n\n\t----------------------------------------------"<<endl;
+	cout<<"\t\t\t-- MENU --";
+	cout<<"\n\t1. Deposit amount"
+	    <<"\n\t2. Withdraw amount"
+	    <<"\n\t3. Transfer funds to another account"
+	    <<"\n\t4. Go back";
+	cout<<"\n\t----------------------------------------------"<<endl;
+	cout<<"\n\tEnter choice(1-4): ";
+	cin>>choice;
+	switch(choice)
+	{
+		case 1: // Invokes deposit_withdraw() function for deposit purpose
+			clrscr();
+			acc.deposit_withdraw(1); // 1 => deposit
+			getch();
+			clrscr();
+			break;
+		case 2: // Invokes deposit_withdraw() function for withdraw purpose
+			clrscr();
+			acc.deposit_withdraw(2); // 2 => withdraw
+			getch();
+			clrscr();
+			break;
+		case 3: // Invokes transfer() function
+			clrscr();
+			acc.transfer();
+			getch();
+			clrscr();
+			break;
+		case 4:
+			break;
+		default:
+			cout <<"\n\n\t\tInvalid input. Try again in  ";
+			for (a=5; a>=0; a--) {
+					delay(500);
+					cout<<"\b"<<a;
+			}
+			clrscr();
+			break;
+	}
+}
+
+// MAIN FUNCTION
 
 void main()
 {
@@ -312,78 +670,61 @@ void main()
 	// Fancy menu
 	gotoxy(30,1);
 	cout<<"BANK MANAGEMENT SYSTEM";
-	cout<<"\n\n\t----------------------------------------------"<<endl;
-	cout<<"\t\t\t-- MENU --";
-	cout<<"\n\t1. Open a new account"
-	    <<"\n\t2. Deposit amount"
-	    <<"\n\t3. Withdraw amount"
-	    <<"\n\t4. Account enquiry"
-	    <<"\n\t5. Modify account"
-	    <<"\n\t6. Close an account"
-	    <<"\n\t7. Transfer funds to another account"
-	    <<"\n\t8. Request a cheque book"
-	    <<"\n\t9. Credits"
-	    <<"\n\t10. Exit";
+	cout<<"\n\n\tNow is "<<nowTime;
 	cout<<"\n\t----------------------------------------------"<<endl;
-	cout<<"\n\tEnter choice(1-10): ";
+	cout<<"\t\t\t-- MENU --";
+	cout<<"\n\t1. Account management"
+	    <<"\n\t2. Account transactions"
+	    <<"\n\t3. Account enquiry"
+	    <<"\n\t4. Request a cheque book"
+	    <<"\n\t5. View Transaction History"
+	    <<"\n\t6. Display all account holders list"
+	    <<"\n\t7. Credits"
+	    <<"\n\t8. Exit";
+	cout<<"\n\t----------------------------------------------"<<endl;
+	cout<<"\n\tEnter choice(1-8): ";
 	cin>>choice;
 	switch (choice)
 	{
-	case 1: // Invokes write_acc() function
+	 case 1: // Invokes acc_mng() function
+		acc_mng();
 		clrscr();
-		write_acc();
+		break;
+	 case 2: // Invokes acc_tx() function
+		acc_tx();
+		clrscr();
+		break;
+	 case 3: // Invokes show_acc() function
+		clrscr();
+		acc.show_acc();
 		getch();
 		clrscr();
 		break;
-	 case 2: // Invokes deposit_withdraw() function for deposit purpose
+	 case 4: // Invokes cheque_req() function
 		clrscr();
-		deposit_withdraw(1); // 1 => deposit
+		acc.cheque_req();
 		getch();
 		clrscr();
 		break;
-	 case 3: // Invokes deposit_withdraw() function for withdraw purpose
-		clrscr();
-		deposit_withdraw(2); // 2 => withdraw
+	 case 5: // Invokes tx_history() function
+	 	clrscr();
+		acc.tx_history();
 		getch();
 		clrscr();
 		break;
-	 case 4: // Invokes show_acc() function
-		clrscr();
-		show_acc();
+	 case 6: // Invokes display_all() function
+	 	clrscr();
+		acc.display_all();
 		getch();
 		clrscr();
 		break;
-	 case 5: // Invokes modify_acc() function
-		clrscr();
-		modify_acc();
-		getch();
-		clrscr();
-		break;
-	 case 6: // Invokes delete_acc() function
-		clrscr();
-		delete_acc();
-		getch();
-		clrscr();
-		break;
-	 case 7: // Invokes transfer() function
-		clrscr();
-		transfer();
-		getch();
-		clrscr();
-		break;
-	 case 8: // Invokes cheque_req() function
-		clrscr();
-		cheque_req();
-		getch();
-		clrscr();
-		break;
-	 case 9: // Invokes credits() function
+	 case 7: // Invokes credits() function
 		clrscr();
 		credits();
 		getch();
 		clrscr();
 		break;
-	 case 10: // Terminates the program
+	 case 8: // Terminates the program
 		exit(0);
 		break;
 	 default:
