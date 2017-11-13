@@ -1,22 +1,20 @@
 /* Programmers' name: Eshaan Bansal & Anviti Singh
-   Date (last worked upon on): 21/09/2017
-   Title: Bank management system
+   Date (last worked upon on): 28/10/2017
+   Title: Bank Management System
 	*/
 
-#include<iostream.h>
-#include<iomanip.h>
-#include<conio.h>
-#include<stdio.h>
-#include<process.h>
-#include<ctype.h>
-#include<dos.h>
-#include<time.h>
-#include<fstream.h>
+#include<iostream.h> // standard input/output operations
+#include<conio.h> // fx: getch(), gotoxy(), clrscr()
+#include<stdio.h> // fx: gets(), puts(), remove(), rename()
+#include<process.h> // exit()
+#include<ctype.h> // fx: toupper()
+#include<dos.h> // fx: delay()
+#include<time.h> // fx: ctime()
+#include<fstream.h> // fx: read(), write(), open(), close(), seekg(), seekp()
 
 // global variables
 
 int flag=0;
-struct datee { int dd,mm,yy,sec,min,hour; }; // `datee' because `date' identifier is pre-defined in time.h
 struct tt {
   int tt_sec;      /* Seconds */
   int tt_min;      /* Minutes */
@@ -28,7 +26,7 @@ struct tt {
 
 time_t t=time(NULL);
 char* nowTime=ctime(&t);
-tm* d=localtime(&t); // tm.A structure(included in time.h) defining the broken-down time
+tm* d=localtime(&t); // tm->A structure(included in time.h) defining the broken-down time
 fstream fp;
 
 // main class
@@ -36,7 +34,7 @@ fstream fp;
 class account
 {
     long acnum, balance;
-    datee DOB,DOA; // DOA=> Date Of Activation
+    tt DOB,DOA; // DOA=> Date Of Activation
     char name[20], address[30], type;
     int pin[4];
 	tt tx_date[20];
@@ -67,7 +65,7 @@ class account
 	    return balance;
 	}
 
-}acc;
+}acc; // object declaration in global scope
 
 // end of main class defintion
 
@@ -155,13 +153,13 @@ void account::write_acc()
 	cout<<"\nEnter name of the account holder: ";
 	gets(name);
 	cout<<"\nEnter Date of Birth in DD/MM/YYYY format: ";
-	cin>>DOB.dd;
+	cin>>DOB.tt_mday;
 	gotoxy(48, 8);
 	cout<<"/ ";
-	cin>>DOB.mm;
+	cin>>DOB.tt_mon;
 	gotoxy(53, 8);
 	cout<<"/ ";
-	cin>>DOB.yy;
+	cin>>DOB.tt_year;
 	cout<<"\nWhat type of account do you wish to open ? (C/S): ";
 	cin>>type;
 	type=toupper(type);
@@ -174,9 +172,9 @@ void account::write_acc()
 		cout<<"*";
 	}
 	cout<<"\n\nTime of account creation >> "<<nowTime;
-	acc.DOA.dd=d->tm_mday;
-	acc.DOA.mm=d->tm_mon;
-	acc.DOA.yy=d->tm_year;
+	DOA.tt_mday=d->tm_mday;
+	DOA.tt_mon=d->tm_mon;
+	DOA.tt_year=d->tm_year;
 	cout<<"\n\n\t-----------Account Created-----------";
 	fp.write((char*)&acc,sizeof(account));
 	fp.close();
@@ -198,8 +196,8 @@ void account::show_acc()
 				cout<<"\t\t -- ACCOUNT DETAILS --"
 					<<"\n\tAccount no.: "<<acnum
 					<<"\n\tAccount Holder Name: "<<name
-					<<"\n\tDate of Birth: "<<DOB.dd<<"/"<<DOB.mm<<"/"<<DOB.yy
-					<<"\n\tDate of account creation: "<<DOA.dd<<"/"<<DOA.mm<<"/"<<1900+DOA.yy
+					<<"\n\tDate of Birth: "<<DOB.tt_mday<<"/"<<DOB.tt_mon<<"/"<<DOB.tt_year
+					<<"\n\tDate of account creation: "<<DOA.tt_mday<<"/"<<DOA.tt_mon<<"/"<<1900+DOA.tt_year
 					<<"\n\tType of Account: ";
 				if (type=='S')
 					cout<<"Savings";
@@ -402,7 +400,7 @@ void account::deposit_withdraw( int option )
 						tx_date[tx_num].tt_hour=d->tm_hour;
 						tx_date[tx_num].tt_mday=d->tm_mday;
 						tx_date[tx_num].tt_mon=d->tm_mon;
-						tx_date[tx_num].tt_year=d->tm_year;tx_date[tx_num].tt_mday=d->tm_mday;
+						tx_date[tx_num].tt_year=d->tm_year;
 						cout<<"\n\n\tAccount Balance: "<<balance;
 						break;
 					}
@@ -508,28 +506,30 @@ void account::tx_history()
 			pin_verify();
 			if (flag!=1)  {
 				clrscr();
-				gotoxy(10,2);
-				cout<<"S No.";
-				gotoxy(25,2);
-				cout<<"Date";
-				gotoxy(50,2);
-				cout<<"Type";
-				gotoxy(65,2);
-				cout<<"Amount";
+				gotoxy(32,1);
+				cout<<"TRANSACTION HISTORY";
 				gotoxy(10,3);
+				cout<<"S No.";
+				gotoxy(30,3);
+				cout<<"Date";
+				gotoxy(50,3);
+				cout<<"Type";
+				gotoxy(65,3);
+				cout<<"Amount";
+				gotoxy(10,4);
 				cout<<"-------------------------------------------------------------";
 				for (int i=1; i<=tx_num; i++) {
-					gotoxy(10,4+i);
+					gotoxy(10,5+i);
 					cout<<i;
-					gotoxy(25,4+i);
+					gotoxy(22,5+i);
 					cout<<tx_date[i].tt_mday<<"/"<<tx_date[i].tt_mon<<"/"<<1900+tx_date[i].tt_year
 						<<"  "<<tx_date[i].tt_hour<<":"<<tx_date[i].tt_min<<":"<<tx_date[i].tt_sec;
-					gotoxy(50,4+i);
+					gotoxy(50,5+i);
 					if (tx_type[i]=='S')
 					cout<<"Debit";
 					else if (tx_type[i]=='C')
 					cout<<"Credit";
-					gotoxy(65,4+i);
+					gotoxy(65,5+i);
 					if (tx_type[i]=='C')
 						cout<<"+"<<tx_amt[i];
 					else
@@ -687,7 +687,7 @@ void acc_tx()
 			break;
 		default:
 			cout <<"\n\n\t\tInvalid input. Try again in  ";
-			for (a=5; a>=0; a--) {
+			for (a=5; a>0; a--) {
 					delay(500);
 					cout<<"\b"<<a;
 			}
@@ -773,5 +773,6 @@ void main()
 		break;
     }
     } while (1);
-    getch();
 }
+/*  *********************** End of code ***********************  */
+
