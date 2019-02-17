@@ -15,7 +15,7 @@ struct stack
 
 int isEmpty(struct stack *s) 
 { 
-    return s->top == -1 ; 
+	return s->top == -1 ; 
 } 
 
 void push(struct stack *s, char c)
