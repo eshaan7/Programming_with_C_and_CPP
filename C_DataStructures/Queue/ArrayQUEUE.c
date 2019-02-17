@@ -75,7 +75,7 @@ int main()
 	printf("\n\t1. Push element");
 	printf("\n\t2. Pop element");
 	printf("\n\t3. Print queue");
-    printf("\n\t4. Print element at front");
+    	printf("\n\t4. Print element at front");
 	printf("\n\t5. Exit");
 	printf("\n\t--------------------");
 	printf("\n\n\t\tEnter choice(1-4): ");
@@ -84,23 +84,23 @@ int main()
 	switch(choice)
 	{
 		case 1: //
-				enqueue();
-				break;
+			enqueue();
+			break;
 		case 2: //
-			    dequeue();
-				break;
+			dequeue();
+			break;
 		case 3: //
-				print_queue();
-				break;
-        case 4:
-                queueFront();
-                break;
+			print_queue();
+			break;
+        	case 4:
+                	queueFront();
+                	break;
 		case 5: //
-				exit(0);
-				break;
+			exit(0);
+			break;
 		default:
-				printf("\nInvalid input. Please try again.\n\n");
-				break;
+			printf("\nInvalid input. Please try again.\n\n");
+			break;
 	}
 	} while (1);
 	return 0;
