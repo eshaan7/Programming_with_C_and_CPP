@@ -53,17 +53,17 @@ void print_queue()
         else 
             printf("\n\t%9d", A[i]);
     }
-    printf("\n\n");        
+    printf("\n\n");    
 }
 
-void queueFront() 
+void queueFront()
 { 
     if (front == -1) { 
         printf("\n\tqueueFront failed: Queue is Empty\n"); 
         return; 
     } 
     printf("\nFront Element is: %d", A[front]);
-} 
+}
 
 int main()
 {

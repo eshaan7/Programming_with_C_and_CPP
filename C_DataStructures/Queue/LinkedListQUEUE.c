@@ -32,13 +32,12 @@ void dequeue()
         printf("\n\tDequeue failed: Queue is empty.\n");
         return;
     }
+    struct Node* temp = front;
     if (front==rear)
         front=rear=NULL;
-    else {
-        struct Node* temp = front;
+    else
         front = front->next;
-        free(temp);
-    }
+    free(temp);
 }
 
 void print_queue()
