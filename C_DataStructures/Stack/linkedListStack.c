@@ -43,7 +43,6 @@ void pop()
 	}
 }
 
-	//unsigned char cchoice='0';
 void print_stack()
 {
 	if (top == NULL) { 

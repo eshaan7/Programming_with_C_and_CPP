@@ -37,6 +37,11 @@ int retTop()
 	return A[top];
 }
 
+int isEmpty(struct stack *s) 
+{ 
+    return s->top == -1 ; 
+}
+
 void print_stack()
 {
 	int i;
