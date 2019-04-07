@@ -1,5 +1,6 @@
-/*	Author's name: Eshaan Bansal
-	Linked list implementation of stack
+/*	Programmers' name: Eshaan Bansal (41816401518)
+  	Date: 04/04/2019
+	Topic: 3. Write a program to implement stack using linked list.
 */
 
 #include<stdio.h>
@@ -65,11 +66,9 @@ void print_stack()
 
 int main()
 {
-	//unsigned char cchoice='0';
 	int choice;
 	do {
 	choice=0;
-	//system("clear");
 	printf("\n\t--------MENU--------");
 	printf("\n\t1. Push element");
 	printf("\n\t2. Pop element");
@@ -80,16 +79,16 @@ int main()
 	scanf("%d", &choice);
 	switch(choice)
 	{
-		case 1: //
+		case 1: // to push element to top of stack
 				push();
 				break;
-		case 2: //
+		case 2: // to pop element from top of stack
 				pop();
 				break;
-		case 3: //
+		case 3: // to display a stack
 				print_stack();
 				break;
-		case 4: //
+		case 4: // terminates a 
 				exit(0);
 				break;
 		default:

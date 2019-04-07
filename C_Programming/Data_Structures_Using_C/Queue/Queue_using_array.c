@@ -1,18 +1,21 @@
-/*	Author's name: Eshaan Bansal
+/*	Programmers' name: Eshaan Bansal (41816401518)
+  	Date: 04/04/2019
+	Topic: 8. Write a program to implement queue using array.
 */
 
 #include<stdio.h>
 #include<stdlib.h>
 
 #define MAX_SIZE 10
+
 int A[MAX_SIZE];
 int rear=-1;
 int front=-1;
 
 void enqueue()
 {
-    if ( (rear>=MAX_SIZE-1 && front==0) || rear==front-1) {
-        printf("\n\enqueue failed: Circular queue is full.\n");
+    if (rear>=MAX_SIZE-1) {
+        printf("\n\enqueue failed: Queue is full.\n");
         return;
     }
     int x;
@@ -22,10 +25,6 @@ void enqueue()
         front=rear=0;
         A[rear]=x;
     }
-    else if (rear==MAX_SIZE-1) {
-        rear=0;
-        A[rear]=x;
-    }
     else
         A[++rear]=x;
 }
@@ -33,14 +32,12 @@ void enqueue()
 void dequeue()
 {
     if (front==-1) {
-        printf("\n\tdequeue failed: Circular queue is empty.\n");
+        printf("\n\tdequeue failed: Queue is empty.\n");
         return;
     }
     printf("\n\tDeleted element: %d\n", A[front]);
     if (front==rear)
         front=rear=-1;
-    else if (front == MAX_SIZE-1)
-        front=0;
     else
         front++;
 }
@@ -48,29 +45,28 @@ void dequeue()
 void print_queue()
 {   
     if (front==-1) {
-        printf("\n\print_queue failed: Circular queue is empty.\n");
+        printf("\nprint_queue failed: Queue is empty.\n");
         return;
     }
-    int i=front;
-    do {
+    for (int i=front; i<=rear; i++) {
         if (i==front)
             printf("\n\tfront-> %d", A[i]);
-        else
+        else if (i==rear)
+            printf("\n\trear-> %2d", A[i]);
+        else 
             printf("\n\t%9d", A[i]);
-        i=(i+1)%MAX_SIZE;
-    } while (i!=rear);
-    printf("\n\trear-> %2d\n\n", A[i]);       
+    }
+    printf("\n\n");    
 }
 
-void queueFront() 
+void queueFront()
 { 
     if (front == -1) { 
-        printf("\n\tqueueFront failed: Circular queue is Empty\n"); 
+        printf("\n\tqueueFront failed: Queue is Empty\n"); 
         return; 
     } 
     printf("\nFront Element is: %d", A[front]);
-} 
-
+}
 
 int main()
 {
@@ -81,7 +77,7 @@ int main()
 	printf("\n\t--------MENU--------");
 	printf("\n\t1. Push element");
 	printf("\n\t2. Pop element");
-	printf("\n\t3. Print Circular queue");
+	printf("\n\t3. Print queue");
     printf("\n\t4. Print element at front");
 	printf("\n\t5. Exit");
 	printf("\n\t--------------------");
@@ -91,23 +87,23 @@ int main()
 	switch(choice)
 	{
 		case 1: //
-				enqueue();
-				break;
+			enqueue();
+			break;
 		case 2: //
-			    dequeue();
-				break;
+			dequeue();
+			break;
 		case 3: //
-				print_queue();
-				break;
+			print_queue();
+			break;
         case 4:
-                queueFront();
-                break;
+        	queueFront();
+        	break;
 		case 5: //
-				exit(0);
-				break;
+			exit(0);
+			break;
 		default:
-				printf("\nInvalid input. Please try again.\n\n");
-				break;
+			printf("\nInvalid input. Please try again.\n\n");
+			break;
 	}
 	} while (1);
 	return 0;

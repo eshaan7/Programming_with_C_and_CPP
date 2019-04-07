@@ -1,5 +1,6 @@
-/*	Author's name: Eshaan Bansal
-	Array implementation of stack
+/*	Programmers' name: Eshaan Bansal (41816401518)
+  	Date: 04/04/2019
+	Topic: 2. Write a program to implement stack using array.
 */
 
 #include<stdio.h>
@@ -32,16 +33,6 @@ void pop()
 		top--;
 }
 
-int retTop() 
-{
-	return A[top];
-}
-
-int isEmpty(struct stack *s) 
-{ 
-    return s->top == -1 ; 
-}
-
 void print_stack()
 {
 	int i;
@@ -50,18 +41,16 @@ void print_stack()
 		if (i==top)
 			printf("\n\ttop-->%2d",A[i]);
 		else
-			printf("%8d\n",A[i]);
+			printf("\n\t%8d",A[i]);
 	}
 	printf("\n");
 }
 
 int main()
 {
-	//unsigned char choice='0';
 	int choice;
 	do {
 	choice=0;
-	//system("clear");
 	printf("\n\t--------MENU--------");
 	printf("\n\t1. Push element");
 	printf("\n\t2. Pop element");
@@ -72,16 +61,16 @@ int main()
 	scanf("%d", &choice);
 	switch(choice)
 	{
-		case 1: //
+		case 1: // to push element to top of stack
 				push();
 				break;
-		case 2: //
+		case 2: // to pop an element from the top of stack
 				pop();
 				break;
-		case 3: //
+		case 3: // to display a stack
 				print_stack();
 				break;
-		case 4: //
+		case 4: // exits program
 				exit(0);
 				break;
 		default:

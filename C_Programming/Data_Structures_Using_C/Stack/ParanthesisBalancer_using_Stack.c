@@ -1,4 +1,6 @@
-/*	Author's name: Eshaan Bansal
+/*  Programmers' name: Eshaan Bansal (41816401518)
+    Date: 04/04/2019
+    Topic: 7. Write a program to check for balanced parenthesis using stack.
 */
 
 #include<stdio.h>

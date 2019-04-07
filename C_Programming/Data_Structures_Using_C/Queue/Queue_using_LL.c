@@ -1,4 +1,6 @@
-/*	Author's name: Eshaan Bansal
+/*  Programmers' name: Eshaan Bansal (41816401518)
+    Date: 04/04/2019
+    Topic: 9. Write a program to implement queue using linked list
 */
 
 #include<stdio.h>
@@ -43,7 +45,7 @@ void dequeue()
 void print_queue()
 {
     if (front==NULL) {
-        printf("\n\print_queue failed: Queue is empty.\n");
+        printf("\nprint_queue failed: Queue is empty.\n");
         return;
     }
     struct Node* temp = front;
@@ -58,7 +60,7 @@ void print_queue()
     }
 }
 
-int print_front() {
+void print_front() {
 	if(front == NULL) {
 		printf("\n\tprint_front failed: Queue is empty\n");
 		return;

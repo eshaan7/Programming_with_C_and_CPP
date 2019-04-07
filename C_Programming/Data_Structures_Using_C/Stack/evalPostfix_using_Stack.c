@@ -1,4 +1,6 @@
-/*	Author's name: Eshaan Bansal
+/*	Programmers' name: Eshaan Bansal (41816401518)
+  	Date: 04/04/2019
+	Topic: 6. Write a program to evaluate postfix expression using stack.
 */
 
 #include<stdio.h>
@@ -75,6 +77,7 @@ int evaluatePostfix(char* exp)
 int main() 
 { 
     char exp[] = "231*+9-";
+    printf("The expression is:%s\n", exp);
     //char exp[] = "100 200 + 2 / 5 * 7 +"; 
     printf ("\tpostfix evaluation: %d\n", evaluatePostfix(exp)); 
     return 0; 
