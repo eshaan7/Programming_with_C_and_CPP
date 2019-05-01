@@ -48,7 +48,7 @@ int evaluatePostfix(char* exp)
     // Create a stack of capacity equal to expression size 
     struct stack s;
     s.top=-1;
-    int i; 
+    int i;
     // Scan all characters one by one from left to right
     for (i = 0; exp[i]!='\0'; ++i) { 
         // If the scanned character is an operand (number here), 
@@ -68,7 +68,7 @@ int evaluatePostfix(char* exp)
             case '*': push(&s, val2 * val1); break; 
             case '/': push(&s, val2/val1); break; 
             } 
-        } 
+        }
     } 
     return pop(&s);
 }

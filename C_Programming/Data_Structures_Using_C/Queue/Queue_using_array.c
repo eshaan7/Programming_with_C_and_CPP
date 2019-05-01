@@ -15,7 +15,7 @@ int front=-1;
 void enqueue()
 {
     if (rear>=MAX_SIZE-1) {
-        printf("\n\enqueue failed: Queue is full.\n");
+        printf("\n\tenqueue() failed: Queue is full.\n");
         return;
     }
     int x;
@@ -32,7 +32,7 @@ void enqueue()
 void dequeue()
 {
     if (front==-1) {
-        printf("\n\tdequeue failed: Queue is empty.\n");
+        printf("\n\tdequeue() failed: Queue is empty.\n");
         return;
     }
     printf("\n\tDeleted element: %d\n", A[front]);
@@ -45,7 +45,7 @@ void dequeue()
 void print_queue()
 {   
     if (front==-1) {
-        printf("\nprint_queue failed: Queue is empty.\n");
+        printf("\n\tprint_queue() failed: Queue is empty.\n");
         return;
     }
     for (int i=front; i<=rear; i++) {
@@ -62,7 +62,7 @@ void print_queue()
 void queueFront()
 { 
     if (front == -1) { 
-        printf("\n\tqueueFront failed: Queue is Empty\n"); 
+        printf("\n\tqueueFront() failed: Queue is Empty\n"); 
         return; 
     } 
     printf("\nFront Element is: %d", A[front]);
@@ -95,7 +95,7 @@ int main()
 		case 3: //
 			print_queue();
 			break;
-        case 4:
+        case 4: //
         	queueFront();
         	break;
 		case 5: //

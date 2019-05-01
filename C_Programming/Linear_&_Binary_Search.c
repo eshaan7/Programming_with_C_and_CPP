@@ -26,7 +26,7 @@ int linearSearch(int arr[], int n, int x)
 int binarySearch(int arr[], int l, int r, int x) 
 { 
     if (r >= l) { 
-        int mid = l + (r - l) / 2; 
+        int mid = l + (r - l) / 2; // or simply (r+l)/2
   
         // If the element is present at the middle 
         // itself 

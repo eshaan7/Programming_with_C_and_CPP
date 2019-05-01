@@ -17,7 +17,7 @@ struct Graph
 {
     int numVertices;
     int* visited;
-    struct node** adjLists;
+    struct node** adjList;
 };
 
 struct Graph* createGraph(int);
@@ -28,16 +28,16 @@ void DFS(struct Graph*, int);
 
 int main()
 {
-    int v,c,ver1,ver2,ver3,ver4;
+    int number_of_vertices, choice=0, ver1, ver2, ver3;
     printf("\nEnter the number of vertices: ");
-    scanf("%d",&v);
-    struct Graph* graph = createGraph(v);
+    scanf("%d",&number_of_vertices);
+    struct Graph* graph = createGraph(number_of_vertices);
     printf("\n1.Add Edge\n2.Print Graph\n3.DFS Traversal\n4.Exit");
     while(1)
     {
         printf("\nEnter your choice: ");
-        scanf("%d",&c);
-        switch(c)
+        scanf("%d",&choice);
+        switch(choice)
         {
         case 1:
             printf("Enter first vertex to add edge: ");
@@ -66,14 +66,11 @@ int main()
 }
 
 
-void DFS(struct Graph* graph, int vertex) 
+void DFS(struct Graph* graph, int startVertex) 
 {
-    struct node* adjList = graph->adjLists[vertex];
-    struct node* temp = adjList;
-
-    graph->visited[vertex] = 1;
-    printf("Visited %d \n", vertex);
-
+    struct node* temp = graph->adjList[startVertex];
+    graph->visited[startVertex] = 1;
+    printf("Visited %d\n", startVertex);
     while(temp!=NULL) {
         int connectedVertex = temp->vertex;
         if(graph->visited[connectedVertex] == 0) {
@@ -86,7 +83,7 @@ void DFS(struct Graph* graph, int vertex)
 
 struct node* createNode(int v)
 {
-    struct node* newNode = malloc(sizeof(struct node));
+    struct node* newNode = (struct node*)malloc(sizeof(struct node*));
     newNode->vertex = v;
     newNode->next = NULL;
     return newNode;
@@ -94,16 +91,14 @@ struct node* createNode(int v)
 
 struct Graph* createGraph(int vertices)
 {
-    struct Graph* graph = malloc(sizeof(struct Graph));
+    struct Graph* graph = (struct Graph*)malloc(sizeof(struct Graph));
     graph->numVertices = vertices;
 
-    graph->adjLists = malloc(vertices * sizeof(struct node*));
+    graph->adjList = malloc(vertices*sizeof(struct node*));
 
-    graph->visited = malloc(vertices * sizeof(int));
-
-    int i;
-    for (i = 0; i < vertices; i++) {
-        graph->adjLists[i] = NULL;
+    graph->visited = malloc(vertices*sizeof(int));
+    for (int i=0; i<vertices; i++) {
+        graph->adjList[i] = NULL;
         graph->visited[i] = 0;
     }
     return graph;
@@ -113,21 +108,20 @@ void addEdge(struct Graph* graph, int src, int dest)
 {
     // Add edge from src to dest
     struct node* newNode = createNode(dest);
-    newNode->next = graph->adjLists[src];
-    graph->adjLists[src] = newNode;
+    newNode->next = graph->adjList[src];
+    graph->adjList[src] = newNode;
 
     // Add edge from dest to src
     newNode = createNode(src);
-    newNode->next = graph->adjLists[dest];
-    graph->adjLists[dest] = newNode;
+    newNode->next = graph->adjList[dest];
+    graph->adjList[dest] = newNode;
 }
 
 void printGraph(struct Graph* graph)
 {
-    int v;
-    for (v = 0; v < graph->numVertices; v++) {
-        struct node* temp = graph->adjLists[v];
-        printf("\n Adjacency list of vertex %d\n ", v);
+    for (int v = 0; v <(graph->numVertices); v++) {
+        struct node* temp = graph->adjList[v];
+        printf("\nAdjacency list of vertex [%d]: ", v);
         while (temp) {
             printf("%d -> ", temp->vertex);
             temp = temp->next;

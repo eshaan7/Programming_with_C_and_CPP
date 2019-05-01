@@ -23,7 +23,7 @@ int isEmpty_queue()
 		return 0;
 }
 
-void insert_queue(int vertex)
+void enqueue(int vertex)
 {
 	if(rear == MAX-1)
 		printf("\nError: Queue Overflow");
@@ -35,21 +35,20 @@ void insert_queue(int vertex)
 	}
 }
 
-int delete_queue()
+int dequeue()
 {	
-	int delete_item;
 	if(front == -1 || front > rear){
 		printf("\nError: Queue Underflow\n");
 		exit(1);
 	}
-	delete_item = queue[front];
+	int deleted_item = queue[front];
 	front = front+1;
-	return delete_item;
+	return deleted_item;
 }
 
 void create_graph()
 {	
-	int count, max_edge ,origin, destin;
+	int count, max_edge, origin, destin;
  	printf("\nEnter number of vertices : ");
 	scanf("%d", &V);
 	max_edge = V*(V-1);
@@ -70,15 +69,15 @@ void create_graph()
 
 void BFS(int v)
 {
-	insert_queue(v);
+	enqueue(v);
 	state[v] = waiting;
 	while(!isEmpty_queue()) {	
-		v = delete_queue();
+		v = dequeue();
 		printf("%d ",v);
 		state[v] = visited;
 		for(int i=0; i<V; i++) {
 			if(adj[v][i] == 1 && state[i] == initial) {
-				insert_queue(i);
+				enqueue(i);
 				state[i] = waiting;
 			}
 		}

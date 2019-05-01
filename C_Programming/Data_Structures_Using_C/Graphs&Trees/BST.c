@@ -1,4 +1,4 @@
-/*  Programmers' name: Eshaan Bansal (41816401518)
+/*  Programmer's name: Eshaan Bansal (Eshaan7)
     Topic: 16. Write a program to implement BST: Insertion Deletion Search and all three types of Traversal.
 */
 
@@ -23,11 +23,40 @@ void inorder(struct node *root)
 { 
 	if (root != NULL) { 
 		inorder(root->left); 
-		printf("%d \n", root->key); 
+		printf("%d ", root->key); 
 		inorder(root->right); 
 	} 
 }
 
+void preorder(struct node* root)
+{
+	if (root !=NULL ) {
+		printf("%d ", root->key); 
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+
+void postorder(struct node* root) {
+	if ( root!=NULL ) {
+		postorder(root->left);
+		postorder(root->right);
+		printf("%d ", root->key); 
+	}		
+}
+/* Compute the "height" of a tree -- the number of 
+    nodes along the longest path from the root node 
+    down to the farthest leaf node.*/
+int findHeight(struct node* node)
+{
+	if ( node == NULL) return -1;
+	int leftHeight = findHeight(node->left);
+	int rightHeight = findHeight(node->right);
+	if (leftHeight > rightHeight)
+		return leftHeight+1;
+	else 
+		return rightHeight+1;
+}
 
 int searchTree(struct node *root, int data) 
 { 
@@ -37,7 +66,7 @@ int searchTree(struct node *root, int data)
             return 1;
         inorder(root->right); 
     }
-    return -1; 
+    return -1;
 }  
 
 struct node* insert(struct node* node, int key) 
@@ -55,15 +84,17 @@ struct node* insert(struct node* node, int key)
 	return node; 
 } 
 
-struct node * minValueNode(struct node* node) 
+struct node* minValueNode(struct node* current) 
 { 
-    struct node* current = node;
-    /* loop down to find the leftmost leaf */
-    while (current->left != NULL) 
-        current = current->left; 
-
-    return current; 
-} 
+	if (current == NULL) {
+		printf("\nError: Tree is empty.\n");
+		return current;
+	}
+    else if (current->left != NULL) 
+    	return current;
+    // search in left subtree
+    minValueNode(current->left);
+}
 
 struct node* deleteNode(struct node* root, int key) 
 { 
@@ -82,30 +113,33 @@ struct node* deleteNode(struct node* root, int key)
   
     // if key is same as root's key, then This is the node 
     // to be deleted 
-    else
-    { 
-        // node with only one child or no child 
-        if (root->left == NULL) { 
-            struct node *temp = root->right; 
-            free(root); 
-            return temp; 
+    else { 
+    	// node with no child 
+    	if ( root->left == NULL && root->right ==NULL) {
+    		free(root);
+    		root = NULL;
+    	}
+        // node with only one child 
+        else if (root->left == NULL) { 
+            struct node *temp = root;
+            root = root->right; 
+            free(temp); 
         } 
         else if (root->right == NULL) { 
-            struct node *temp = root->left; 
-            free(root); 
-            return temp; 
+            struct node *temp = root;
+            root = root->left; 
+            free(temp); 
         } 
-  
         // node with two children: Get the inorder successor (smallest 
         // in the right subtree) 
-        struct node* temp = minValueNode(root->right); 
-  
-        // Copy the inorder successor's content to this node 
-        root->key = temp->key; 
-  
-        // Delete the inorder successor 
-        root->right = deleteNode(root->right, temp->key); 
-    } 
+  		else {
+	        struct node* temp = minValueNode(root->right); 
+	        // Copy the inorder successor's content to this node 
+	        root->key = temp->key; 
+	        // Delete the inorder successor 
+	        root->right = deleteNode(root->right, temp->key); 
+		}    
+    }
     return root; 
 } 
 
@@ -118,7 +152,10 @@ int main()
 	printf("\n 1 - Insert");
     printf("\n 2 - Delete at i");
     printf("\n 3 - Inorder Traversal");
-    printf("\n 4 - Search for element");
+    printf("\n 4 - Preorder Traversal");
+    printf("\n 5 - Postorder Traversal");
+    printf("\n 6 - Search for element");
+    printf("\n 7 - Find Height of a node");
 	printf("\n------------------");
     while (1)
     {
@@ -141,12 +178,26 @@ int main()
     		printf("\nInorder Traversal: \n");
 			inorder(root); 
 			break;
-			
+
 		case 4:
+    		printf("\nPreorder Traversal: \n");
+			preorder(root); 
+			break;
+
+		case 5:
+    		printf("\nPostorder Traversal: \n");
+			postorder(root); 
+			break;
+			
+		case 6:
             printf("\nEnter element to search: ");
             scanf("%d", &x);
             (searchTree(root, x))?printf("\n\tElement Found!"):printf("\n\tElement not found!");
             break;
+
+        case 7:
+    		printf("\nHeight of given node: %d\n",findHeight(root));
+			break;
 
         default:
             printf("\nInvalid option. Try again\n");

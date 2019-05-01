@@ -19,8 +19,7 @@ int main(int argc, char *argv[])
         printf("Could not open file %s\n", filename);
        	return 1; // Undesired execution
     } 
-	for(c=getc(fp); c!=EOF; c=getc(fp))
-	{
+	for(c=getc(fp); c!=EOF; c=getc(fp)) {
 		if (c=='\n')
 			count=count+1;
 	}

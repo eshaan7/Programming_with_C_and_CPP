@@ -17,7 +17,7 @@ struct stack
 
 int isEmpty(struct stack *s) 
 { 
-    return s->top == -1 ; 
+    return s->top == -1;
 } 
 
 void push(struct stack *s, int n)
@@ -51,7 +51,7 @@ int main()
     int x;
     printf("\n\tEnter number in decimal: ");
     scanf("%d", &x);
-    while (x>=1) {
+    while (x>0) {
         push(&s, x%2);
         x=x/2;
     }

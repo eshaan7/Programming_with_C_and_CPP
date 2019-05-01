@@ -47,7 +47,7 @@ void pop()
 void print_stack()
 {
 	if (top == NULL) { 
-        printf("\nStack Underflow\n"); 
+        printf("\nStack is empty!\n"); 
         exit(1); 
     } 
 	struct Node *temp = top;

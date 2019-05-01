@@ -5,14 +5,14 @@
 #include<stdio.h>
 
 int a[20][20];
-int reach[20];
+int visited[20];
 int n;
 
 void dfs(int v)
 {
-    reach[v]=1;
+    visited[v]=1;
     for(int i=0; i<n; i++) {
-        if(a[v][i] && !reach[i]) { 
+        if(a[v][i] && !visited[i]) { 
             printf("\n%d->%d",v,i);
             dfs(i);
         }
@@ -20,7 +20,7 @@ void dfs(int v)
 }
 
 int main(){
-    int i=0,j=0,count=0;
+    int n,i=0,j=0,count=0;
 
     printf("\nEnter no of vertices : ");
     scanf("%d",&n);
@@ -28,7 +28,7 @@ int main(){
     // initializing with zero
     for(i=0;i<n;i++) {
         for(j=0;j<n;j++){
-            reach[i]=0;
+            visited[i]=0;
             a[i][j]=0;
         }
     }
@@ -44,7 +44,7 @@ int main(){
     dfs(1);
 
     for(i=0;i<n;i++) {
-        if(reach[i])
+        if(visited[i])
             count++;
     }
 
