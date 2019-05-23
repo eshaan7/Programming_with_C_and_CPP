@@ -12,7 +12,7 @@ struct Node
 { 
 	int data; 
 	struct Node* link;
-}; 
+};
 
 struct Queue 
 { 
@@ -24,8 +24,8 @@ void enQueue(struct Queue *q, int value)
 { 
 	struct Node *temp = (struct Node*)malloc(sizeof(struct Node*));
 	temp->data = value; 
-	if (q->front == NULL) 
-		q->front = temp; 
+	if (q->front == NULL && q->rear == NULL) 
+		q->front = q->rear = temp; 
 	else
 		q->rear->link = temp; 
 
@@ -43,15 +43,13 @@ int deQueue(struct Queue *q)
 
 	// If this is the last node to be deleted 
 	int value; // Value to be dequeued 
-	if (q->front == q->rear) 
-	{ 
+	if (q->front == q->rear) { 
 		value = q->front->data; 
 		free(q->front); 
 		q->front = NULL; 
 		q->rear = NULL; 
 	} 
-	else // There are more than one nodes 
-	{ 
+	else { // There are more than one nodes  
 		struct Node *temp = q->front; 
 		value = temp->data; 
 		q->front = q->front->link; 
@@ -65,10 +63,13 @@ int deQueue(struct Queue *q)
 // Function displaying the elements of Circular Queue 
 void displayQueue(struct Queue *q) 
 { 
+	if (q->front == NULL) { 
+		printf("\n\tdisplayQueue() failed: Queue is empty.\n"); 
+		return;
+	} 
 	struct Node *temp = q->front; 
 	printf("\nElements in Circular Queue are: "); 
-	while (temp->link != q->front) 
-	{ 
+	while (temp->link != q->front) { 
 		if (temp==q->front)
             printf("\n\tfront-> %2d", temp->data); 
         else
@@ -82,7 +83,7 @@ void displayQueue(struct Queue *q)
 int main() 
 { 
 	// Create a queue and initialize front and rear 
-	struct Queue *q = (struct Queue*)malloc(sizeof(struct Queue*));
+	struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue*));
 	q->front = q->rear = NULL; 
 
 	// Inserting elements in Circular Queue 

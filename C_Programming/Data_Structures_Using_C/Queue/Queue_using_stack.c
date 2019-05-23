@@ -12,6 +12,8 @@ struct queue {
     struct stack s1, s2;
 };
 
+// stack ADT operations
+
 void push(struct stack *s, int x)
 {
     if (s->top == MAX_SIZE-1) {
@@ -43,6 +45,8 @@ int isEmpty(struct stack *s)
     return 0;
 }
 
+// Operations on queue with the two stacks
+
 void enqueue(struct queue *q, int x)
 {
     while (!isEmpty(&(q->s1))) {
@@ -62,13 +66,17 @@ void dequeue(struct queue *q)
         printf("\n\tQueue is empty!\n");
         return;
     }
-    int x = retTop(&q->s1);
-    pop(&q->s1);
+    int x = retTop(&(q->s1));
+    pop(&(q->s1));
     printf("popped: %d", x);
 }
 
 void print_queue(struct queue *q)
 {
+	if (isEmpty(&q->s1)) {
+        printf("\n\tQueue is empty!\n");
+        return;
+    }
 	int i;
 	printf("Queue:");
 	for (i=q->s1.top; i>=0; i--) {
@@ -79,6 +87,8 @@ void print_queue(struct queue *q)
 	}
 	printf("\n");
 }
+
+// main() function
 
 int main()
 {
@@ -121,3 +131,5 @@ int main()
 	} while (1);
 	return 0;
 }
+
+// END OF PROGRAM

@@ -31,7 +31,7 @@ void enqueue(int x)
 void dequeue()
 {
     if (front==NULL) {
-        printf("\n\tDequeue failed: Queue is empty.\n");
+        printf("\n\tdequeue() failed: Queue is empty.\n");
         return;
     }
     struct Node* temp = front;
@@ -45,7 +45,7 @@ void dequeue()
 void print_queue()
 {
     if (front==NULL) {
-        printf("\nprint_queue failed: Queue is empty.\n");
+        printf("\n\tprint_queue() failed: Queue is empty.\n");
         return;
     }
     struct Node* temp = front;
@@ -62,7 +62,7 @@ void print_queue()
 
 void print_front() {
 	if(front == NULL) {
-		printf("\n\tprint_front failed: Queue is empty\n");
+		printf("\n\tprint_front() failed: Queue is empty\n");
 		return;
 	}
 	printf("\n\tfront-> %d",front->data);

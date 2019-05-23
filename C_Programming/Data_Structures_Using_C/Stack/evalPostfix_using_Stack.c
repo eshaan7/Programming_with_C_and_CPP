@@ -79,6 +79,6 @@ int main()
     char exp[] = "231*+9-";
     printf("The expression is:%s\n", exp);
     //char exp[] = "100 200 + 2 / 5 * 7 +"; 
-    printf ("\tpostfix evaluation: %d\n", evaluatePostfix(exp)); 
+    printf("\tpostfix evaluation: %d\n", evaluatePostfix(exp)); 
     return 0; 
 } 

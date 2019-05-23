@@ -12,13 +12,14 @@ struct node {
 };
 
 struct node *head = NULL;
-struct node *current = NULL;
 
-bool isEmpty() {
+bool isEmpty() 
+{
    return head == NULL;
 }
 
-void push(int new_data) {
+void push(int new_data) 
+{
    /* create new node */
    struct node *new_node = (struct node*)malloc(sizeof(struct node));
    new_node->data = new_data; // assign new data

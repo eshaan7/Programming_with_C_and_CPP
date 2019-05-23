@@ -15,7 +15,7 @@ int front=-1;
 void enqueue()
 {
     if ( (rear>=MAX_SIZE-1 && front==0) || rear==front-1) {
-        printf("\n\enqueue failed: Circular queue is full.\n");
+        printf("\n\tenqueue() failed: Circular queue is full.\n");
         return;
     }
     int x;
@@ -36,7 +36,7 @@ void enqueue()
 void dequeue()
 {
     if (front==-1) {
-        printf("\n\tdequeue failed: Circular queue is empty.\n");
+        printf("\n\tdequeue() failed: Circular queue is empty.\n");
         return;
     }
     printf("\n\tDeleted element: %d\n", A[front]);
@@ -51,7 +51,7 @@ void dequeue()
 void print_queue()
 {   
     if (front==-1) {
-        printf("\nprint_queue failed: Circular queue is empty.\n");
+        printf("\nprint_queue() failed: Circular queue is empty.\n");
         return;
     }
     int i=front;

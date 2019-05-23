@@ -30,15 +30,16 @@ void inorder(struct node *root)
 
 void preorder(struct node* root)
 {
-	if (root !=NULL ) {
+	if (root != NULL) {
 		printf("%d ", root->key); 
 		preorder(root->left);
 		preorder(root->right);
 	}
 }
 
-void postorder(struct node* root) {
-	if ( root!=NULL ) {
+void postorder(struct node* root) 
+{
+	if (root != NULL) {
 		postorder(root->left);
 		postorder(root->right);
 		printf("%d ", root->key); 
@@ -86,15 +87,11 @@ struct node* insert(struct node* node, int key)
 
 struct node* minValueNode(struct node* current) 
 { 
-	if (current == NULL) {
-		printf("\nError: Tree is empty.\n");
-		return current;
-	}
-    else if (current->left != NULL) 
-    	return current;
-    // search in left subtree
-    minValueNode(current->left);
-}
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL) 
+        current = current->left; 
+    return current; 
+} 
 
 struct node* deleteNode(struct node* root, int key) 
 { 

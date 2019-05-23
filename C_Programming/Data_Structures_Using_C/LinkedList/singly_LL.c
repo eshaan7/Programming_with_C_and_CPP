@@ -27,13 +27,12 @@ void push(int new_data)
 prev_node */
 void insertAtnthpos(int new_data, int n) 
 { 
+	if (n == 1) {  // n=1 means insert at beginning
+		push(new_data);
+		return;
+	}
 	struct Node* new_node = (struct Node*)malloc(sizeof(struct Node)); 
 	new_node->data = new_data; // assign new_data
-	if (n == 1) { 
-		new_node->next = head; // make new_node point to previous head node
-		head = new_node;
-		return; 
-	} 
 	struct Node* prev_node = head;
 	for (int i=0; i<(n-2); i++)
 		prev_node = prev_node->next;
@@ -68,12 +67,12 @@ void append(int new_data)
 // This function prints contents of linked list starting from head
 void printList() 
 { 
-	struct Node* node = head;
-	while (node != NULL) { 
-		printf("[%d]->", node->data); 
-		node = node->next; 
+	struct Node* temp = head;
+	while (temp != NULL) { 
+		printf("[%d]->", temp->data); 
+		temp = temp->next; 
 	}
-	printf("NULL\n\n"); 
+	printf("NULL\n\n");
 } 
 
 int main() 

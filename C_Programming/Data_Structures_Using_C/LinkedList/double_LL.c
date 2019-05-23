@@ -11,18 +11,18 @@ struct Node {
 	struct Node* prev; 
 }; 
 
-void push(struct Node** head_ref, int new_data) 
+void push(struct Node* head, int new_data) 
 { 
 	struct Node* new_node = (struct Node*)malloc(sizeof(struct Node)); 
 	new_node->data = new_data; 
-	new_node->next = (*head_ref); 
+	new_node->next = head; 
 	new_node->prev = NULL; 
 	/* change prev of head node to new node */
-	if ((*head_ref) != NULL) 
-		(*head_ref)->prev = new_node; 
+	if ( head != NULL) 
+		head->prev = new_node; 
 
 	/* move the head to point to the new node */
-	(*head_ref) = new_node; 
+	head = new_node; 
 } 
 
 /* Given a node as prev_node, insert a new node after the given node */
@@ -47,10 +47,9 @@ void insertAfter(struct Node* prev_node, int new_data)
 		new_node->next->prev = new_node; 
 } 
 
-void append(struct Node** head_ref, int new_data) 
+void append(struct Node* head, int new_data) 
 { 
 	struct Node* new_node = (struct Node*)malloc(sizeof(struct Node)); 
-	struct Node* last = *head_ref;
 	new_node->data = new_data; 
 
 	/* This new node is going to be the last node, so 
@@ -59,13 +58,14 @@ void append(struct Node** head_ref, int new_data)
 
 	/* If the Linked List is empty, then make the new 
 		node as head */
-	if (*head_ref == NULL) { 
+	if (head == NULL) { 
 		new_node->prev = NULL; 
-		*head_ref = new_node; 
+		head = new_node; 
 		return; 
 	} 
 
 	/* Else traverse till the last node */
+	struct Node* last = head;
 	while (last->next != NULL) 
 		last = last->next; 
 
@@ -79,17 +79,17 @@ void append(struct Node** head_ref, int new_data)
 } 
 
 /* Function to delete a node in a Doubly Linked List. 
-   head_ref --> pointer to head node pointer. 
+   head --> head node pointer. 
    del  -->  pointer to node to be deleted. */
-void deleteNode(struct Node** head_ref, struct Node* del) 
+void deleteNode(struct Node* head, struct Node* del) 
 { 
     /* base case */
-    if (*head_ref == NULL || del == NULL)
+    if (head == NULL || del == NULL)
         return; 
   
     /* If node to be deleted is head node */
-    if (*head_ref == del) 
-        *head_ref = del->next; 
+    if (head == del) 
+        head = del->next; 
   
     /* Change next only if node to be deleted is NOT the last node */
     if (del->next != NULL)
@@ -108,16 +108,16 @@ void deleteNode(struct Node** head_ref, struct Node* del)
 void printList(struct Node* node) 
 { 
 	struct Node* last; 
-	printf("\nTraversal in forward direction \n"); 
+	printf("\nTraversal in forward direction: "); 
 	while (node != NULL) { 
-		printf(" %d ", node->data); 
+		printf("[%d] -> ", node->data); 
 		last = node; 
 		node = node->next; 
 	} 
 
-	printf("\nTraversal in reverse direction \n"); 
+	printf("\nTraversal in reverse direction: "); 
 	while (last != NULL) { 
-		printf(" %d ", last->data); 
+		printf("[%d]<- ", last->data); 
 		last = last->prev; 
 	} 
 } 
@@ -154,12 +154,12 @@ int main()
     	case 1: //
     		printf("\nEnter element to push: ");
     		scanf("%d", &x);
-    		append(&head, x); 
+    		append(head, x); 
     		break;
     	case 2:
     		printf("\nEnter element to push: ");
     		scanf("%d", &x);
-    		push(&head, x); 
+    		push(head, x); 
     		break;
     	case 3:
     		printf("\nEnter element to push: ");
@@ -167,7 +167,7 @@ int main()
     		insertAfter(head->next, x); 
     		break;
     	case 4:
-    		deleteNode(&head, head);
+    		deleteNode(head, head);
     		break;
     	case 5:
     		printList(head);

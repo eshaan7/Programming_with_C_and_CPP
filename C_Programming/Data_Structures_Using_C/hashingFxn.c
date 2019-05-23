@@ -7,6 +7,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#define MAX 10
+
 struct item {
     int key;
     int value;
@@ -20,7 +22,6 @@ struct hashtable_item {
 struct hashtable_item *arr;
 
 int size = 0;
-int max = 10;
 
 void init_array()
 {
@@ -31,7 +32,7 @@ void init_array()
 }
 
 int hashcode(int key) {
-    return (key % max);
+    return (key % MAX);
 }
 
 void insert(int new_key, int new_value)
@@ -48,7 +49,7 @@ void insert(int new_key, int new_value)
 			return;
 		}
 
-		i = (i + 1) % max;
+		i = (i + 1) % MAX;
 
 		if (i == index) {
 			printf("\nHash table is full, cannot insert any more items. \n");
