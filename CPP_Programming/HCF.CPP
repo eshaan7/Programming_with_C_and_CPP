@@ -3,14 +3,15 @@
 	Author: Eshaan Bansal
 	Date: 23/09/2016 */
 
-#include<iostream.h>
+#include<bits/stdc++.h>
+using namespace std;
 #include<conio.h>
 
-void main() {
+int main() {
 
-	clrscr();
+
 	int a,b,N,D,R=1,HCF;
-	cout<<"\nEnter 2 numbers: ";
+	cout<<"Enter 2 numbers: "<<endl;
 	cin>>a>>b;
 	if (a>b) {
 		N=a;
@@ -31,5 +32,5 @@ void main() {
 		}
 	}
 	cout<<"HCF of "<<a<<" and "<<b<<" is: "<<HCF;
-	getch();
+
 }
